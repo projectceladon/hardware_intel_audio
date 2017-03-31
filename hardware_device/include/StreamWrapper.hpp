@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <StreamInterface.hpp>
 #include <AudioCommsAssert.hpp>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <hardware/audio.h>
 #include <utils/Errors.h>
 #include <string>
@@ -191,6 +191,8 @@ private:
     static int wrapSetGain(audio_stream_in_t *stream, float gain);
     static ssize_t wrapRead(audio_stream_in_t *stream, void *buffer, size_t bytes);
     static uint32_t wrapGetInputFramesLost(audio_stream_in_t *stream);
+    static int wrapGetCapturePosition(const audio_stream_in *stream,
+                                               int64_t *frames, int64_t *time);
 };
 
 template <class Trait>

@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2015
+# Copyright (C) Intel 2013-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ component_src_files :=  \
     AudioStreamRoute.cpp \
     AudioRouteManager.cpp \
     AudioRouteManagerObserver.cpp \
-    RouteManagerInstance.cpp \
+    RouteManagerInstance.cpp
 
 component_export_includes := \
     $(LOCAL_PATH)/includes \
@@ -46,20 +46,22 @@ component_includes_common := \
 
 component_includes_dir := \
     hw \
-    parameter \
+    parameter
 
 component_includes_dir_host := \
     $(foreach inc, $(component_includes_dir), $(HOST_OUT_HEADERS)/$(inc)) \
-    $(component_includes_common) \
+    $(component_includes_common)
 
 component_includes_dir_target := \
     $(foreach inc, $(component_includes_dir), $(TARGET_OUT_HEADERS)/$(inc)) \
     $(component_includes_common) \
-    $(call include-path-for, bionic)
+    $(call include-path-for, bionic) \
+    $(TOP_DIR)frameworks/av/services/audiopolicy/common/include
 
 component_static_lib := \
     libstream_static \
     libsamplespec_static \
+    libaudioconversion_static \
     libaudio_hal_utilities \
     libaudioplatformstate \
     libparametermgr_static \
@@ -69,29 +71,29 @@ component_static_lib := \
     libproperty \
     liblpepreprocessinghelper \
     libevent-listener_static \
-    libaudiocomms_naive_tokenizer \
+    libaudiocomms_naive_tokenizer
 
 component_static_lib_host := \
     $(foreach lib, $(component_static_lib), $(lib)_host) \
     libtinyalsa \
     libcutils \
     libutils \
-    libaudioutils \
+    libaudioutils
 
 component_static_lib_target := \
     $(component_static_lib) \
-    libmedia_helper \
+    libmedia_helper
 
 component_shared_lib_common := \
     libparameter \
-    libicuuc \
+    libicuuc
 
 component_shared_lib_target := \
     $(component_shared_lib_common) \
     libtinyalsa \
     libcutils \
     libutils \
-    libaudioutils \
+    libaudioutils
 
 component_shared_lib_host := \
     libicuuc-host \
@@ -129,7 +131,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 #######################################################################
 # Component Host Build
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(component_export_includes)
@@ -151,7 +153,7 @@ LOCAL_STRIP_MODULE := false
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 
 include $(BUILD_HOST_SHARED_LIBRARY)
-
+endif
 #######################################################################
 # Build for target to export headers
 
@@ -166,7 +168,7 @@ include $(BUILD_STATIC_LIBRARY)
 
 #######################################################################
 # Build for host to export headers
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(component_includes_common)
@@ -177,7 +179,7 @@ LOCAL_MODULE_TAGS := optional
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 
 include $(BUILD_HOST_STATIC_LIBRARY)
-
+endif
 #######################################################################
 
 include $(OPTIONAL_QUALITY_ENV_TEARDOWN)

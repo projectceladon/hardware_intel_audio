@@ -1,6 +1,6 @@
 # INTEL CONFIDENTIAL
 #
-# Copyright (c) 2013-2015 Intel Corporation All Rights Reserved.
+# Copyright (c) 2013-2016 Intel Corporation All Rights Reserved.
 #
 # The source code contained or described herein and all documents related to
 # the source code ("Material") are owned by Intel Corporation or its suppliers
@@ -37,13 +37,13 @@ component_src_files :=  \
     Criterion.cpp
 
 component_common_includes_dir := \
-    external/tinyalsa/include \
+    external/tinyalsa/include
 
 component_static_lib := \
     libaudio_comms_utilities \
     libaudio_comms_convert \
     libsamplespec_static \
-    libpfw_utility \
+    libpfw_utility
 
 component_static_lib_target := \
     $(component_static_lib) \
@@ -55,11 +55,10 @@ component_static_lib_host := \
 
 component_shared_lib:= \
     libparameter \
-    libxmlserializer \
-    libaudioroutemanager \
+    libaudioroutemanager
 
 component_shared_lib_common := \
-    liblog \
+    liblog
 
 component_shared_lib_target := \
     $(component_shared_lib_common) \
@@ -73,7 +72,7 @@ component_cflags := -Wall -Werror -Wextra
 
 #######################################################################
 # Host Component Build
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libroute-subsystem_host
@@ -91,7 +90,7 @@ LOCAL_CFLAGS := $(component_cflags)
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 
 include $(BUILD_HOST_SHARED_LIBRARY)
-
+endif
 #######################################################################
 # Target Component Build
 

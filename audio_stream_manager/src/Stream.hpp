@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 
 #include "SampleSpec.hpp"
 #include <StreamInterface.hpp>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <Direction.hpp>
-#include <TinyAlsaIoStream.hpp>
+#include <IoStream.hpp>
 #include <media/AudioBufferProvider.h>
 #include <hardware/audio.h>
 #include <string>
@@ -36,7 +36,7 @@ class AudioConversion;
 
 class Stream
     : public virtual StreamInterface,
-      public TinyAlsaIoStream,
+      public IoStream,
       private audio_comms::utilities::NonCopyable
 {
 public:
@@ -73,7 +73,7 @@ public:
     virtual android::status_t setParameters(const std::string &keyValuePairs);
     virtual std::string getParameters(const std::string &keys) const;
 
-    // From TinyAlsaIoStream
+    // From IoStream
     virtual bool isRoutedByPolicy() const;
     virtual uint32_t getFlagMask() const;
     virtual uint32_t getUseCaseMask() const;
@@ -254,15 +254,6 @@ protected:
      * pushed by Audio Flinger and hooked by the stream in the context of the record thread.
      */
     android::RWLock mPreProcEffectLock;
-
-    /**
-     * maximum number of read/write retries.
-     *
-     * This constant is used to set maximum number of retries to do
-     * on write/read operations before stating that error is not
-     * recoverable and reset media server.
-     */
-    static const uint32_t mMaxReadWriteRetried = 50;
 
     static const uint32_t mDefaultSampleRate = 48000; /**< Default HAL sample rate. */
     static const uint32_t mDefaultChannelCount = 2; /**< Default HAL nb of channels. */

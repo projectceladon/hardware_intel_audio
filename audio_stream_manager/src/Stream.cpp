@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-#ifdef LOG_TAG
-#undef LOG_TAG
-#endif
 #define LOG_TAG "AudioStream"
 
 #include "Device.hpp"
@@ -65,8 +62,6 @@ Stream::Stream(Device *parent, audio_io_handle_t handle, uint32_t flagMask)
 
 Stream::~Stream()
 {
-    setStandby(true);
-
     delete mAudioConversion;
     delete mDumpAfterConv;
     delete mDumpBeforeConv;
@@ -87,7 +82,7 @@ status_t Stream::set(audio_config_t &config)
     if (config.format == AUDIO_FORMAT_DEFAULT) {
         config.format = mDefaultFormat;
     }
-    setConfig(config);
+    setConfig(config, isOut());
     if (mParent->getStreamInterface().supportStreamConfig(*this)) {
         updateLatency();
         return android::OK;
@@ -229,7 +224,7 @@ void Stream::updateLatency()
 {
     AutoR lock(mStreamLock);
     mLatencyMs =
-            AudioUtils::convertUsecToMsec(mParent->getStreamInterface().getLatencyInUs(*this));
+        AudioUtils::convertUsecToMsec(mParent->getStreamInterface().getLatencyInUs(*this));
 }
 
 status_t Stream::setStandby(bool isSet)
@@ -250,7 +245,7 @@ status_t Stream::setStandby(bool isSet)
 status_t Stream::attachRouteL()
 {
     Log::Verbose() << __FUNCTION__ << ": " << (isOut() ? "output" : "input") << " stream";
-    TinyAlsaIoStream::attachRouteL();
+    IoStream::attachRouteL();
 
     SampleSpec ssSrc;
     SampleSpec ssDst;
@@ -271,7 +266,7 @@ status_t Stream::attachRouteL()
 status_t Stream::detachRouteL()
 {
     Log::Verbose() << __FUNCTION__ << ": " << (isOut() ? "output" : "input") << " stream";
-    TinyAlsaIoStream::detachRouteL();
+    IoStream::detachRouteL();
 
     return android::OK;
 }

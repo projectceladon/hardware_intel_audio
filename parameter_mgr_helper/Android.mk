@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2015
+# Copyright (C) Intel 2013-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ include $(OPTIONAL_QUALITY_ENV_SETUP)
 # Common variables
 
 component_export_include_dir := \
-    $(LOCAL_PATH)/includes \
+    $(LOCAL_PATH)/includes
 
 component_src_files := \
     ParameterMgrHelper.cpp \
@@ -33,10 +33,10 @@ component_src_files := \
     CriterionType.cpp
 
 component_common_includes_dir := \
-    $(component_export_include_dir) \
+    $(component_export_include_dir)
 
 component_includes_dir := \
-    parameter \
+    parameter
 
 component_includes_dir_host := \
     $(foreach inc, $(component_includes_dir), $(HOST_OUT_HEADERS)/$(inc)) \
@@ -49,7 +49,8 @@ component_includes_dir_target := \
 
 component_static_lib := \
     libaudio_comms_utilities \
-    libaudio_comms_convert
+    libaudio_comms_convert \
+    libpfw_utility
 
 component_static_lib_host := \
     $(foreach lib, $(component_static_lib), $(lib)_host)
@@ -58,7 +59,7 @@ component_cflags := -Wall -Werror -Wextra
 
 #######################################################################
 # Component Host Build
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libparametermgr_static_host
@@ -75,7 +76,7 @@ LOCAL_CFLAGS := $(component_cflags) -O0 -ggdb
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 
 include $(BUILD_HOST_STATIC_LIBRARY)
-
+endif
 #######################################################################
 # Component Target Build
 

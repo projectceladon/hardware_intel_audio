@@ -27,7 +27,8 @@ namespace intel_audio
 class StreamOut : public StreamOutInterface, public Stream
 {
 public:
-    StreamOut(Device *parent, audio_io_handle_t handle, uint32_t flagMask, audio_devices_t devices);
+    StreamOut(Device *parent, audio_io_handle_t handle, uint32_t flagMask, audio_devices_t devices,
+              const std::string &address);
 
     virtual ~StreamOut();
 
@@ -39,8 +40,7 @@ public:
     virtual android::status_t setVolume(float left, float right);
     virtual android::status_t write(const void *buffer, size_t &bytes);
     virtual android::status_t getRenderPosition(uint32_t &dspFrames) const;
-    /** @note API not implemented in our Audio HAL */
-    virtual android::status_t getNextWriteTimestamp(int64_t & /*ts*/) const { return android::OK; }
+    virtual android::status_t getNextWriteTimestamp(int64_t &ts) const;
     virtual android::status_t flush();
     /** @note API not implemented in our Audio HAL */
     virtual android::status_t setCallback(stream_callback_t, void *) { return android::OK; }

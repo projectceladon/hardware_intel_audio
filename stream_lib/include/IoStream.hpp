@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,12 +170,13 @@ public:
      * format. The config must be valid, the check must be performed by the stream manager.
      *
      * @param[in] config to be set for the stream.
+     * @param[in] direction of the stream (true=playback, false=capture).
      */
-    inline void setConfig(const audio_config_t &config)
+    inline void setConfig(const audio_config_t &config, bool isOut)
     {
         setSampleRate(config.sample_rate);
         setFormat(config.format);
-        setChannels(config.channel_mask);
+        setChannels(config.channel_mask, isOut);
     }
 
     /**
@@ -255,10 +256,11 @@ public:
      * Channels is a mask, each bit represents a specific channel.
      *
      * @param[in] channel mask of the stream.
+     * @param[in] direction of the stream (true=playback, false=capture).
      */
-    inline void setChannels(audio_channel_mask_t mask)
+    inline void setChannels(audio_channel_mask_t mask, bool isOut)
     {
-        mSampleSpec.setChannelMask(mask);
+        mSampleSpec.setChannelMask(mask, isOut);
     }
 
     /**
@@ -275,9 +277,9 @@ public:
      */
     void setNewStreamRoute(IStreamRoute *newStreamRoute);
 
-    virtual uint32_t getBufferSizeInBytes() const = 0;
+    uint32_t getBufferSizeInBytes() const;
 
-    virtual size_t getBufferSizeInFrames() const = 0;
+    size_t getBufferSizeInFrames() const;
 
     /**
      * Read frames from audio device.
@@ -288,8 +290,7 @@ public:
      *
      * @return status_t error code of the pcm read operation.
      */
-    virtual android::status_t pcmReadFrames(void *buffer, size_t frames,
-                                            std::string &error) const = 0;
+    android::status_t pcmReadFrames(void *buffer, size_t frames, std::string &error) const;
 
     /**
      * Write frames to audio device.
@@ -300,10 +301,9 @@ public:
      *
      * @return status_t error code of the pcm write operation.
      */
-    virtual android::status_t pcmWriteFrames(void *buffer, ssize_t frames,
-                                             std::string &error) const = 0;
+    android::status_t pcmWriteFrames(void *buffer, ssize_t frames, std::string &error) const;
 
-    virtual android::status_t pcmStop() const = 0;
+    android::status_t pcmStop() const;
 
     /**
      * Returns available frames in pcm buffer and corresponding time stamp.
@@ -312,8 +312,7 @@ public:
      * For an output stream, frames available are the number of empty frames available
      * for the application to write.
      */
-    virtual android::status_t getFramesAvailable(size_t &avail,
-                                                 struct timespec &tStamp) const = 0;
+    android::status_t getFramesAvailable(size_t &avail, struct timespec &tStamp) const;
 
     IStreamRoute *getCurrentStreamRoute() const { return mCurrentStreamRoute; }
 
@@ -342,7 +341,7 @@ public:
      * @param[in] devices selected by the policy
      * @return OK if set correctly, error code otherwise.
      */
-    android::status_t setDevices(audio_devices_t devices);
+    android::status_t setDevices(audio_devices_t devices, const std::string &address);
 
     /**
      * Retrieve the device(s) that has been assigned by the policy to this stream.
@@ -352,6 +351,12 @@ public:
     {
         AutoR lock(mStreamLock);
         return mDevices;
+    }
+
+    std::string getDeviceAddress() const
+    {
+        AutoR lock(mStreamLock);
+        return mDeviceAddress;
     }
 
 protected:
@@ -384,6 +389,8 @@ protected:
     SampleSpec mSampleSpec; /**< stream sample specifications. */
 
 private:
+    IAudioDevice *mAudioDevice; /**< Platform dependant audio device. */
+
     void setCurrentStreamRouteL(IStreamRoute *currentStreamRoute);
 
     /**
@@ -405,6 +412,7 @@ private:
     uint32_t mEffectsRequestedMask; /**< Mask of requested effects. */
 
     audio_devices_t mDevices = AUDIO_DEVICE_NONE; /**< devices assgined by the policy.*/
+    std::string mDeviceAddress;
 };
 
 } // namespace intel_audio

@@ -36,7 +36,6 @@ void Parameter::setMappingValuePair(const string &name, const string &value)
 bool Parameter::getLiteralValueFromParam(const string &androidParam, string &literalValue) const
 {
     if (mMappingValuesMap.empty()) {
-
         // No Mapping table has been provided, all value that may take the Android Param
         // will be propagated to the PFW Parameter
         literalValue = androidParam;
@@ -57,19 +56,17 @@ bool Parameter::getParamFromLiteralValue(string &androidParam, const string &lit
     // No Mapping table has been provided, all value that may take the PFW Param
     // will be propagated to the Android Parameter
     if (mMappingValuesMap.empty()) {
-
         androidParam = literalValue;
         return true;
     }
-    for (MappingValuesMapConstIterator it = mMappingValuesMap.begin();
-         it != mMappingValuesMap.end();
-         ++it) {
-
-        if (it->second == literalValue) {
-            androidParam = it->first;
-            return true;
+        for (MappingValuesMapConstIterator it = mMappingValuesMap.begin();
+             it != mMappingValuesMap.end();
+             ++it) {
+            if (it->second == literalValue) {
+                androidParam = it->first;
+                return true;
+            }
         }
-    }
     return false;
 }
 

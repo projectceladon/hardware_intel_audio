@@ -25,9 +25,9 @@ include $(OPTIONAL_QUALITY_ENV_SETUP)
 # Common variables
 
 component_src_files :=  \
+    src/Device.cpp \
     src/Stream.cpp \
     src/audio_hw.cpp \
-    src/Device.cpp \
     src/StreamIn.cpp \
     src/StreamOut.cpp \
     src/CompressedStreamOut.cpp \
@@ -42,11 +42,11 @@ component_includes_dir := \
     external/tinyalsa/include \
     $(call include-path-for, audio-utils) \
     $(call include-path-for, audio-effects) \
-    external/tinycompress/include \
+    external/tinycompress/include
 
 component_includes_dir_host := \
     $(component_includes_dir) \
-    bionic/libc/kernel/uapi/ \
+    bionic/libc/kernel/uapi/
 
 component_includes_dir_target := \
     $(component_includes_dir) \
@@ -63,7 +63,7 @@ component_static_lib += \
     libaudio_comms_utilities \
     libaudio_comms_convert \
     libhalaudiodump \
-    liblpepreprocessinghelper \
+    liblpepreprocessinghelper
 
 component_static_lib_host += \
     $(foreach lib, $(component_static_lib), $(lib)_host) \
@@ -72,15 +72,15 @@ component_static_lib_host += \
     libaudioutils \
     libspeexresampler \
     libtinyalsa \
-    libtinycompress \
+    libtinycompress
 
 component_static_lib_target += \
     $(component_static_lib) \
-    libmedia_helper \
+    libmedia_helper
 
 component_shared_lib_common := \
     libparameter \
-    libaudioroutemanager \
+    libaudioroutemanager
 
 component_shared_lib_target := \
     $(component_shared_lib_common) \
@@ -91,12 +91,12 @@ component_shared_lib_target := \
     libmedia \
     libhardware \
     libaudioutils \
-    libicuuc \
+    libicuuc
 
 component_shared_lib_host := \
     $(foreach lib, $(component_shared_lib_common), $(lib)_host) \
     libicuuc-host \
-    liblog \
+    liblog
 
 
 component_whole_static_lib := \
@@ -114,6 +114,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_REQUIRED_MODULES := \
     audio.primary.$(TARGET_BOARD_PLATFORM) \
+    libroute-subsystem \
     liblpepreprocessing \
     route_criteria.conf
 
@@ -143,7 +144,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 #######################################################################
 # Component Host Build
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/src
@@ -162,7 +163,7 @@ LOCAL_MODULE_OWNER := intel
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 
 include $(BUILD_HOST_STATIC_LIBRARY)
-
+endif
 
 # Target Component functional test
 #######################################################################
@@ -175,17 +176,19 @@ LOCAL_C_INCLUDES := \
         $(TARGET_OUT_HEADERS)/parameter \
         frameworks/av/include \
         system/media/audio_utils/include \
-        system/media/audio_effects/include \
+        system/media/audio_effects/include
 
 LOCAL_STATIC_LIBRARIES := \
         libaudioparameters \
         libaudio_comms_utilities \
         libaudio_comms_convert \
         libmedia_helper \
+        libutils
 
 LOCAL_SHARED_LIBRARIES := \
         libhardware \
         liblog \
+        libcutils libutils
 
 LOCAL_MODULE := audio-hal-functional_test
 LOCAL_MODULE_OWNER := intel
@@ -198,6 +201,7 @@ include $(BUILD_NATIVE_TEST)
 
 # Component functional test for HOST
 #######################################################################
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= test/FunctionalTestHost.cpp
@@ -212,7 +216,7 @@ LOCAL_STATIC_LIBRARIES := \
     $(component_static_lib_host) \
     $(component_whole_static_lib)_host \
     libgtest_host \
-    libgtest_main_host \
+    libgtest_main_host
 
 LOCAL_SHARED_LIBRARIES := \
     $(component_shared_lib_host)
@@ -231,6 +235,7 @@ include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 # Cannot use $(BUILD_HOST_NATIVE_TEST) because of compilation flag
 # misalignment against gtest mk files
 include $(BUILD_HOST_EXECUTABLE)
+endif
 
 #######################################################################
 # Build for configuration file

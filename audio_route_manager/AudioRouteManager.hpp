@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@
 #include <Direction.hpp>
 #include <Observable.hpp>
 #include <EventListener.h>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <utils/RWLock.h>
 #include <list>
 #include <map>
@@ -323,6 +323,24 @@ private:
     mutable android::RWLock mRoutingLock; /**< lock to protect the routing. */
 
     AudioPlatformState *mPlatformState; /**< Platform state handler for Route / Audio PFW. */
+
+    /**Socket Id enumerator */
+    enum UeventSockDesc
+    {
+        FdFromSstDriver,
+        NbSockDesc
+    };
+
+    /** Uevent Socket Fd */
+    int mUEventFd;
+
+    /** Uevent message max length */
+    static const int gUEventMsgMaxLeng;
+
+    /** Socket buffer default size (64K) */
+    static const int gSocketBufferDefaultSize;
+
+    bool mAudioSubsystemAvailable = true;
 };
 
 } // namespace intel_audio

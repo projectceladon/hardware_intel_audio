@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,7 @@ struct StreamRouteConfig;
 class TinyAlsaAudioDevice : public IAudioDevice
 {
 public:
-    TinyAlsaAudioDevice()
-        : mPcmDevice(NULL) {}
-
-    /**
-     * Get the pcm device handle.
-     * Must only be called if isRouteAvailable returns true.
-     * and any access to the device must be called with Lock held.
-     *
-     * @return pcm handle on alsa tiny device.
-     */
-    pcm *getPcmDevice();
+    TinyAlsaAudioDevice() : mPcmDevice(NULL) {}
 
     virtual android::status_t open(const char *cardName, uint32_t deviceId,
                                    const StreamRouteConfig &config, bool isOut);
@@ -44,6 +34,19 @@ public:
     virtual bool isOpened();
 
     virtual android::status_t close();
+
+    virtual android::status_t pcmReadFrames(void *buffer, size_t frames, std::string &error) const;
+
+    virtual android::status_t pcmWriteFrames(void *buffer, ssize_t frames,
+                                             std::string &error) const;
+
+    virtual uint32_t getBufferSizeInBytes() const;
+
+    virtual size_t getBufferSizeInFrames() const;
+
+    virtual android::status_t getFramesAvailable(size_t &avail, struct timespec &tStamp) const;
+
+    virtual android::status_t pcmStop() const;
 
 private:
     pcm *mPcmDevice; /**< Handle on tiny alsa PCM device. */

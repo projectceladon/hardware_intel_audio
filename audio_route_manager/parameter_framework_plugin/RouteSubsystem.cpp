@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (c) 2013-2015 Intel Corporation All Rights Reserved.
+ * Copyright (c) 2013-2016 Intel Corporation All Rights Reserved.
  *
  * The source code contained or described herein and all documents related to
  * the source code ("Material") are owned by Intel Corporation or its suppliers
@@ -40,6 +40,7 @@ const char *const RouteSubsystem::mKeyDirection = "Direction";
 const char *const RouteSubsystem::mKeyType = "Type";
 const char *const RouteSubsystem::mKeyCard = "Card";
 const char *const RouteSubsystem::mKeyDevice = "Device";
+const char *const RouteSubsystem::mKeyDeviceAddress = "DeviceAddress";
 const char *const RouteSubsystem::mKeyPort = "Ports";
 const char *const RouteSubsystem::mKeyGroups = "Groups";
 const char *const RouteSubsystem::mKeyInclusive = "Inclusive";
@@ -52,8 +53,8 @@ const char *const RouteSubsystem::mRouteComponentName = "Route";
 const char *const RouteSubsystem::mStreamRouteComponentName = "StreamRoute";
 const char *const RouteSubsystem::mCriterionComponentName = "Criterion";
 
-RouteSubsystem::RouteSubsystem(const std::string &name)
-    : CSubsystem(name),
+RouteSubsystem::RouteSubsystem(const std::string &name, core::log::Logger &logger)
+    : CSubsystem(name, logger),
       mRouteInterface(NULL)
 {
     mRouteInterface = intel_audio::RouteManagerInstance::getRouteInterface();
@@ -66,6 +67,7 @@ RouteSubsystem::RouteSubsystem(const std::string &name)
     addContextMappingKey(mKeyType);
     addContextMappingKey(mKeyCard);
     addContextMappingKey(mKeyDevice);
+    addContextMappingKey(mKeyDeviceAddress);
     addContextMappingKey(mKeyPort);
     addContextMappingKey(mKeyGroups);
     addContextMappingKey(mKeyInclusive);

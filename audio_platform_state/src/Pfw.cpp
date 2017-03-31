@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,15 +85,20 @@ public:
           mTag(tagName)
     {}
 
-    virtual void log(bool isWarning, const string &log)
+    virtual void info(const string &log)
     {
         const static string format = "-Instance: ";
 
-        if (isWarning) {
-            Log::Warning() << mTag << format << log;
-        } else if (mVerbose == "true") {
+        if (mVerbose == "true") {
             Log::Debug() << mTag << format << log;
         }
+    }
+
+    virtual void warning(const string &log)
+    {
+        const static string format = "-Instance: ";
+
+        Log::Warning() << mTag << format << log;
     }
 };
 
@@ -112,6 +117,17 @@ Pfw<Trait>::Pfw()
 
     mConnector = new CParameterMgrPlatformConnector(pfwConfigurationFilePath);
     mConnector->setLogger(mConnectorLogger);
+    string error;
+    // PFW fail safe mode: a missing subsystem will fallback on virtual subsystem
+    bool isFailSafeActive(Property<bool>("persist.media.pfw.failsafe", true).getValue());
+    if (!mConnector->setFailureOnMissingSubsystem(!isFailSafeActive, error)) {
+        Log::Error() << __FUNCTION__ << ": Failure " <<
+            (isFailSafeActive ? "activated" : "deactivated")
+                     << " on missing subsystem, (error = " << error << ")";
+    } else {
+        Log::Warning() << __FUNCTION__ << ": Fail safe on missing subsystem is "
+                       << (isFailSafeActive ? "active" : "inactive");
+    }
     mParameterHelper = new ParameterMgrHelper(mConnector);
 }
 
@@ -319,6 +335,10 @@ void Pfw<Trait>::addRogueParameter(const string &typeName, const string &paramKe
     if (typeName == gUnsignedIntegerTypeTag) {
         RogueParameter<uint32_t> *paramRogue =
             new RogueParameter<uint32_t>(paramKey, name, mConnector, defaultValue);
+        addParameter(paramRogue, valuePairs, parameterVector);
+    } else if (typeName == gSignedIntegerTypeTag) {
+        RogueParameter<int32_t> *paramRogue =
+            new RogueParameter<int32_t>(paramKey, name, mConnector, defaultValue);
         addParameter(paramRogue, valuePairs, parameterVector);
     } else if (typeName == gStringTypeTag) {
         RogueParameter<string> *paramRogue =

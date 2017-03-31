@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (c) 2013-2015 Intel Corporation All Rights Reserved.
+ * Copyright (c) 2013-2016 Intel Corporation All Rights Reserved.
  *
  * The source code contained or described herein and all documents related to
  * the source code ("Material") are owned by Intel Corporation or its suppliers
@@ -43,8 +43,10 @@ const string AudioStreamRoute::mChannelPolicyAverage = "average";
 
 AudioStreamRoute::AudioStreamRoute(const std::string &mappingValue,
                                    CInstanceConfigurableElement *instanceConfigurableElement,
-                                   const CMappingContext &context)
+                                   const CMappingContext &context,
+                                   core::log::Logger &logger)
     : CFormattedSubsystemObject(instanceConfigurableElement,
+                                logger,
                                 mappingValue,
                                 MappingKeyAmend1,
                                 (MappingKeyAmendEnd - MappingKeyAmend1 + 1),
@@ -54,10 +56,14 @@ AudioStreamRoute::AudioStreamRoute(const std::string &mappingValue,
       mRouteInterface(mRouteSubsystem->getRouteInterface()),
       mCardName(context.getItem(MappingKeyCard)),
       mDevice(context.getItemAsInteger(MappingKeyDevice)),
+      mDeviceAddress(""),
       mIsOut(context.getItem(MappingKeyDirection) == mOutputDirection),
       mIsStreamRoute(context.getItem(MappingKeyType) == mStreamType)
 {
     mRouteName = getFormattedMappingValue();
+    if (context.iSet(MappingKeyDeviceAddress)) {
+        mDeviceAddress = context.getItem(MappingKeyDeviceAddress);
+    }
 
     string ports = context.getItem(MappingKeyPorts);
     Tokenizer mappingTok(ports, mPortDelimiter);
@@ -115,6 +121,7 @@ bool AudioStreamRoute::sendToHW(string & /*error*/)
     streamConfig.requirePostDisable = config.requirePostDisable;
     streamConfig.cardName = mCardName.c_str();
     streamConfig.deviceId = mDevice;
+    streamConfig.deviceAddress = mDeviceAddress;
     streamConfig.channels = config.channel;
     streamConfig.rate = config.rate;
     streamConfig.periodSize = config.periodSize;
@@ -130,6 +137,7 @@ bool AudioStreamRoute::sendToHW(string & /*error*/)
     streamConfig.dynamicChannelMapsControl = config.dynamicChannelMapsControl;
     streamConfig.dynamicFormatsControl = config.dynamicFormatsControl;
     streamConfig.dynamicRatesControl = config.dynamicRatesControl;
+    streamConfig.availMin = config.availMin;
 
     streamConfig.channelsPolicy.erase(streamConfig.channelsPolicy.begin(),
                                       streamConfig.channelsPolicy.end());

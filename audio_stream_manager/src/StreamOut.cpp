@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,17 +32,21 @@ const uint32_t StreamOut::mMaxAgainRetry = 2;
 const uint32_t StreamOut::mWaitBeforeRetryUs = 10000; // 10ms
 const uint32_t StreamOut::mUsecPerMsec = 1000;
 
-StreamOut::StreamOut(Device *parent, audio_io_handle_t handle, uint32_t flagMask, audio_devices_t devices)
+StreamOut::StreamOut(Device *parent,
+                     audio_io_handle_t handle,
+                     uint32_t flagMask,
+                     audio_devices_t devices, const std::string &address)
     : Stream(parent, handle, flagMask),
       mFrameCount(0),
       mEchoReference(NULL),
       mIsMuted(false)
 {
-    setDevice(devices);
+    setDevices(devices, address);
 }
 
 StreamOut::~StreamOut()
 {
+    setStandby(true);
 }
 
 status_t StreamOut::set(audio_config_t &config)
@@ -95,15 +99,14 @@ status_t StreamOut::write(const void *buffer, size_t &bytes)
     if (!isRoutedL() || isMuted()) {
         Log::Warning() << __FUNCTION__ << ": Trashing " << bytes << " bytes for stream " << this
                        << (isMuted() ? ": Stream muted" : ": No route available");
+        mStreamLock.unlock();
         status = generateSilence(bytes);
         mFrameCount += srcFrames;
-        mStreamLock.unlock();
         return status;
     }
 
     size_t dstFrames = 0;
     char *dstBuf = NULL;
-    uint32_t retryCount = 0;
 
     pushEchoReference(buffer, srcFrames);
 
@@ -127,49 +130,28 @@ status_t StreamOut::write(const void *buffer, size_t &bytes)
     Log::Verbose() << __FUNCTION__ << ": srcFrames=" << srcFrames << ", bytes=" << bytes
                    << " dstFrames=" << dstFrames;
 
-    do {
-        std::string error;
+    std::string error;
 
-        status = pcmWriteFrames(dstBuf, dstFrames, error);
+    status = pcmWriteFrames(dstBuf, dstFrames, error);
 
-        if (status < 0) {
-            Log::Error() << __FUNCTION__ << ": write error: " << error
-                         << " - requested " << srcFrames
-                         << " (bytes=" << streamSampleSpec().convertFramesToBytes(srcFrames)
-                         << ") frames";
+    if (status < 0) {
+        Log::Error() << __FUNCTION__ << ": write error: " << error
+                     << " - requested " << srcFrames
+                     << " (bytes=" << streamSampleSpec().convertFramesToBytes(srcFrames)
+                     << ") frames";
 
-            if (error.find(strerror(EIO)) != std::string::npos) {
-                // Dump hw registers debug file info in console
-                mParent->printPlatformFwErrorInfo();
+        if (error.find(strerror(EIO)) != std::string::npos) {
+            // Dump hw registers debug file info in console
+            mParent->printPlatformFwErrorInfo();
 
-            } else if (error.find(strerror(EBADFD)) != std::string::npos) {
-                mStreamLock.unlock();
-                Log::Error() << __FUNCTION__ << ": execute device recovery";
-                setStandby(true);
-                return android::DEAD_OBJECT;
-            }
-            AUDIOCOMMS_ASSERT(error.find(strerror(EBADF)) == std::string::npos,
-                              "Audio Device handle closed not by Audio HAL."
-                              " A corruption might have happenned, investigation required");
-
-            if (++retryCount > mMaxReadWriteRetried) {
-                mStreamLock.unlock();
-                Log::Error() << __FUNCTION__ << ": Hardware not responding";
-                return android::DEAD_OBJECT;
-            }
-
-            // Get the number of microseconds to sleep, inferred from the number of
-            // frames to write.
-            size_t sleepUsecs = routeSampleSpec().convertFramesToUsec(dstFrames);
-
-            // Go sleeping before trying I/O operation again.
-            if (safeSleep(sleepUsecs)) {
-                // If some error arises when trying to sleep, try I/O operation anyway.
-                // Error counter will provoke the restart of mediaserver.
-                Log::Error() << __FUNCTION__ << ":  Error while calling nanosleep interface";
-            }
         }
-    } while (status < 0);
+        AUDIOCOMMS_ASSERT(error.find(strerror(EBADF)) == std::string::npos,
+                          "Audio Device handle closed not by Audio HAL."
+                          " A corruption might have happenned, investigation required");
+        mStreamLock.unlock();
+        generateSilence(bytes);
+        return android::DEAD_OBJECT;
+    }
 
     Log::Verbose() << __FUNCTION__ << ": returns " << streamSampleSpec().convertFramesToBytes(
         AudioUtils::convertSrcToDstInFrames(status, routeSampleSpec(), streamSampleSpec()));
@@ -270,6 +252,44 @@ status_t StreamOut::getPresentationPosition(uint64_t &frames, struct timespec &t
     return android::OK;
 }
 
+status_t StreamOut::getNextWriteTimestamp(int64_t &ts) const
+{
+    AutoR lock(mStreamLock);
+
+    int64_t delay_us;
+    size_t kernelFrames;
+    struct timespec time = {
+        0, 0
+    };
+
+    if (!isRoutedL()) {
+        ALOGE("stream is not routed");
+        return android::INVALID_OPERATION;
+    }
+
+    if (getFramesAvailable(kernelFrames, time) != android::OK) {
+        ALOGE("unable to get available frames");
+        return android::BAD_VALUE;
+    }
+
+    // For output, getFramesAvailable returns available empty frames.
+    kernelFrames = getBufferSizeInFrames() - kernelFrames;
+
+    delay_us = streamSampleSpec().convertFramesToUsec(kernelFrames);
+
+    if (INT64_MAX - delay_us * 1000LL < static_cast<int64_t>(time.tv_sec) * 1000000000LL +
+        static_cast<int64_t>(time.tv_nsec)) {
+        Log::Error() << " timestamp evaluation overflows";
+        return android::BAD_VALUE;
+    }
+
+    ts = static_cast<int64_t>(time.tv_sec) * 1000000000LL
+         + static_cast<int64_t>(time.tv_nsec)
+         + streamSampleSpec().convertFramesToUsec(kernelFrames) * 1000LL;
+
+    return android::OK;
+}
+
 status_t StreamOut::flush()
 {
     AutoR lock(mStreamLock);
@@ -357,7 +377,7 @@ status_t StreamOut::setDevice(audio_devices_t device)
         Log::Error() << __FUNCTION__ << ": invalid output device " << device;
         return android::BAD_VALUE;
     }
-    return setDevices(device);
+    return setDevices(device, {});
 }
 
 } // namespace intel_audio

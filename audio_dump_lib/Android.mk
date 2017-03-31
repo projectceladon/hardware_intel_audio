@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2015
+# Copyright (C) Intel 2013-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ include $(BUILD_STATIC_LIBRARY)
 
 #######################################################################
 # Component Host Build
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libhalaudiodump_host
@@ -79,3 +79,4 @@ LOCAL_STRIP_MODULE := false
 LOCAL_STATIC_LIBRARIES := $(component_static_lib_host)
 
 include $(BUILD_HOST_STATIC_LIBRARY)
+endif

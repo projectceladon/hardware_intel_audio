@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,11 @@ namespace intel_audio
 const std::string StreamIn::mHwEffectImplementor = "IntelLPE";
 
 StreamIn::StreamIn(Device *parent, audio_io_handle_t handle, uint32_t flagMask,
-                   audio_source_t source, audio_devices_t devices)
+                   audio_source_t source, audio_devices_t devices, const std::string &address)
     : Stream(parent, handle, flagMask),
       mFramesLost(0),
       mFramesIn(0),
+      mFramesInCount(0),
       mProcessingFramesIn(0),
       mProcessingBuffer(NULL),
       mProcessingBufferSizeInFrames(0),
@@ -48,12 +49,13 @@ StreamIn::StreamIn(Device *parent, audio_io_handle_t handle, uint32_t flagMask,
       mPreprocessorsHandlerList(),
       mHwBuffer(NULL)
 {
-    setDevice(devices);
+    setDevices(devices & ~AUDIO_DEVICE_BIT_IN, address);
     setInputSource(source);
 }
 
 StreamIn::~StreamIn()
 {
+    setStandby(true);
     freeAllocatedBuffers();
 }
 
@@ -65,8 +67,7 @@ status_t StreamIn::set(audio_config_t &config)
     return Stream::set(config);
 }
 
-status_t StreamIn::getNextBuffer(AudioBufferProvider::Buffer *buffer,
-                                 int64_t /* presentationTimeStamp */)
+status_t StreamIn::getNextBuffer(AudioBufferProvider::Buffer *buffer)
 {
     size_t maxFrames = getBufferSizeInFrames();
 
@@ -86,7 +87,6 @@ status_t StreamIn::getNextBuffer(AudioBufferProvider::Buffer *buffer,
 
 status_t StreamIn::readHwFrames(void *buffer, size_t frames)
 {
-    uint32_t retryCount = 0;
     status_t ret;
 
     if (frames == 0) {
@@ -94,39 +94,20 @@ status_t StreamIn::readHwFrames(void *buffer, size_t frames)
         return android::BAD_VALUE;
     }
 
-    do {
-        std::string error;
+    std::string error;
 
-        ret = pcmReadFrames(buffer, frames, error);
+    ret = pcmReadFrames(buffer, frames, error);
 
-        if (ret < 0) {
-            Log::Error() << __FUNCTION__ << ": read error: " << error << " - requested " << frames
-                         << " (bytes=" << streamSampleSpec().convertFramesToBytes(frames)
-                         << ") frames";
+    if (ret < 0) {
+        Log::Error() << __FUNCTION__ << ": read error: " << error << " - requested " << frames
+                     << " (bytes=" << streamSampleSpec().convertFramesToBytes(frames)
+                     << ") frames";
 
-            if (error.find(strerror(EBADFD)) != std::string::npos) {
-                return android::DEAD_OBJECT;
-            }
-
-            if (++retryCount >= mMaxReadWriteRetried) {
-                Log::Error() << __FUNCTION__ << ": Hardware not responding after " << retryCount
-                             << " retries";
-                return android::DEAD_OBJECT;
-            }
-
-            // Get the number of microseconds to sleep, inferred from the number of
-            // frames to write.
-            size_t sleepUSecs = routeSampleSpec().convertFramesToUsec(frames);
-
-            // Go sleeping before trying I/O operation again.
-            if (safeSleep(sleepUSecs)) {
-                // If some error arises when trying to sleep, try I/O operation anyway.
-                // Error counter will provoke the restart of mediaserver.
-                Log::Error() << __FUNCTION__ << ":  Error while calling nanosleep interface";
-            }
+        if (error.find(strerror(EBADFD)) != std::string::npos) {
+            return android::DEAD_OBJECT;
         }
-
-    } while (ret < 0);
+        return ret;
+    }
 
     // Dump audio input before eventual conversions
     // FOR DEBUG PURPOSE ONLY
@@ -325,17 +306,12 @@ status_t StreamIn::read(void *buffer, size_t &bytes)
         Log::Error() << __FUNCTION__ << ": (buffer=" << buffer << ", bytes=" << bytes
                      << ") returns " << received_frames
                      << ". Generating silence for stream " << this;
-        generateSilence(bytes, buffer);
-
         mStreamLock.unlock();
-
-        if (status == android::DEAD_OBJECT) {
-            Log::Error() << __FUNCTION__ << ": execute device recovery";
-            setStandby(true);
-        }
-        return -EBADFD;
+        generateSilence(bytes, buffer);
+        return status;
     }
     bytes = streamSampleSpec().convertFramesToBytes(received_frames);
+    mFramesInCount += received_frames;
 
     mStreamLock.unlock();
     return android::OK;
@@ -358,6 +334,24 @@ unsigned int StreamIn::getInputFramesLost() const
     // returning the current value by this function call.
     mutable_this->resetFramesLost();
     return count;
+}
+
+status_t StreamIn::getCapturePosition(int64_t &frames, int64_t &time)
+{
+    struct timespec tstamp={0,0};
+    if (clock_gettime(CLOCK_MONOTONIC, &tstamp) != 0)
+    {
+        Log::Error() << __FUNCTION__ << ": Error getting Timestamp";
+        return android::INVALID_OPERATION;
+    }
+    mStreamLock.readLock();
+    frames = (int64_t)mFramesInCount;
+    mStreamLock.unlock();
+    uint64_t now;
+    now = ((tstamp.tv_sec) * 1000000000ull) +
+          (tstamp.tv_nsec);
+    time = (int64_t)now;
+    return android::OK;
 }
 
 
@@ -418,7 +412,7 @@ status_t StreamIn::setDevice(audio_devices_t device)
         Log::Error() << __FUNCTION__ << ": invalid input device " << device;
         return android::BAD_VALUE;
     }
-    return setDevices(device & ~AUDIO_DEVICE_BIT_IN);
+    return setDevices(device & ~AUDIO_DEVICE_BIT_IN, {});
 }
 
 void StreamIn::setInputSource(audio_source_t inputSource)
@@ -721,7 +715,7 @@ status_t StreamIn::pushEchoReference(ssize_t frames, effect_handle_t preprocesso
 
     audio_buffer_t buf;
 
-    buf.frameCount = mReferenceFramesIn;
+    buf.frameCount = frames;
     buf.s16 = mReferenceBuffer;
 
     status_t processingReturn = (*preprocessor)->process_reverse(preprocessor,

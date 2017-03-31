@@ -28,6 +28,19 @@
 
 #include <utilities/Log.hpp>
 
+// #define EMULATE_UEVENT
+#ifdef EMULATE_UEVENT
+#include <cutils/sockets.h>
+#include <sys/socket.h>
+
+static const uint8_t RECOVER = 8;
+static const uint8_t CRASH = 9;
+static const char *const uevent_socket_name = "uevent_emulation";
+
+#else
+#include <cutils/uevent.h>
+#endif
+
 using android::status_t;
 using namespace std;
 using audio_comms::utilities::BitField;
@@ -36,15 +49,32 @@ using audio_comms::utilities::Property;
 typedef android::RWLock::AutoRLock AutoR;
 typedef android::RWLock::AutoWLock AutoW;
 
+static const std::string gEventType{"EVENT_TYPE"};
+static const std::string gRecoverUevent{gEventType + "=" + "SST_RECOVERY"};
+static const std::string gCrashUevent{gEventType + "=" + "SST_CRASHED"};
 
 namespace intel_audio
 {
+const int AudioRouteManager::gUEventMsgMaxLeng = 1024;
+const int AudioRouteManager::gSocketBufferDefaultSize = 64 * AudioRouteManager::gUEventMsgMaxLeng;
 
 AudioRouteManager::AudioRouteManager()
     : mEventThread(new CEventThread(this)),
       mIsStarted(false),
       mPlatformState(NULL)
 {
+#ifdef EMULATE_UEVENT
+    mUEventFd = socket_local_server(uevent_socket_name, ANDROID_SOCKET_NAMESPACE_ABSTRACT,
+                                    SOCK_STREAM);
+    if (mUEventFd == -1) {
+        Log::Error() << __FUNCTION__ << "socket_local_server connection to uevent_emulation failed";
+    }
+#else
+    mUEventFd = uevent_open_socket(gSocketBufferDefaultSize, true);
+    if (mUEventFd < 0) {
+        Log::Error() << __FUNCTION__ << "uevent_open_socket failed, recovery will not work";
+    }
+#endif
 }
 
 AudioRouteManager::~AudioRouteManager()
@@ -57,6 +87,9 @@ AudioRouteManager::~AudioRouteManager()
         mRoutingLock.unlock();
         stopService();
         mRoutingLock.writeLock();
+        if (mUEventFd >= 0) {
+            mEventThread->closeAndRemoveFd(mUEventFd);
+        }
     }
     delete mEventThread;
 }
@@ -90,6 +123,9 @@ status_t AudioRouteManager::stopService()
 
         reset();
         mIsStarted = false;
+        if (mUEventFd >= 0) {
+            mEventThread->closeAndRemoveFd(mUEventFd);
+        }
     }
     return android::OK;
 }
@@ -98,6 +134,13 @@ status_t AudioRouteManager::startService()
 {
     {
         AutoW lock(mRoutingLock);
+
+        // Add UEvent to list of Fd to poll BEFORE starting this event thread.
+        if (mUEventFd >= 0) {
+            Log::Debug() << __FUNCTION__ << ": UEvent fd added to event thread";
+            mEventThread->addOpenedFd(FdFromSstDriver, mUEventFd, true);
+        }
+
         if (mIsStarted) {
             Log::Warning() << "Route Manager service already started.";
             /* Ignore the start; consider this case is not critical */
@@ -174,7 +217,11 @@ void AudioRouteManager::doReconsiderRouting()
         // No need to reroute. Some criterion might have changed, update all criteria and apply
         // the conf in order to take for example tuning configuration that are glitch free and do
         // not need to go through the 5-steps routing.
-        mPlatformState->commitCriteriaAndApplyConfiguration<Audio>();
+        // Note that system Audio PFW Alsa plugin is not aware of availability of audio subsystem,
+        // we prevent to use it while audio subsystem is down.
+        if (mAudioSubsystemAvailable) {
+            mPlatformState->commitCriteriaAndApplyConfiguration<Audio>();
+        }
         return;
     }
     Log::Debug() << __FUNCTION__ << ": Route state:"
@@ -208,6 +255,14 @@ void AudioRouteManager::doReconsiderRouting()
 
 void AudioRouteManager::executeRouting()
 {
+    if (not mAudioSubsystemAvailable) {
+        /** If Audio Subsystem is down, disable all stream route until up and running again.
+         * Do not invoque Audio PFW since Alsa plugin not aware of audio subsystem down
+         */
+        mStreamRouteMap.disableRoutes();
+        mStreamRouteMap.postDisableRoutes();
+        return;
+    }
     executeMuteRoutingStage();
 
     executeDisableRoutingStage();
@@ -228,8 +283,10 @@ void AudioRouteManager::resetRouting()
 bool AudioRouteManager::checkAndPrepareRouting()
 {
     resetRouting();
-    mStreamRouteMap.prepareRouting();
-    mRouteMap.prepareRouting();
+    if (mAudioSubsystemAvailable) {
+        mStreamRouteMap.prepareRouting();
+        mRouteMap.prepareRouting();
+    }
     return mRouteMap.routingHasChanged();
 }
 
@@ -242,10 +299,19 @@ void AudioRouteManager::executeMuteRoutingStage()
 
 void AudioRouteManager::executeDisableRoutingStage()
 {
-    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, PathMask);
-    setRouteCriteriaForDisable();
     mStreamRouteMap.disableRoutes();
+
+    setRouteCriteriaForDisable();
+
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, PostPathMask);
     mPlatformState->applyConfiguration<Audio>();
+
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, StreamPathMask);
+    mPlatformState->applyConfiguration<Audio>();
+
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, PathMask);
+    mPlatformState->applyConfiguration<Audio>();
+
     mStreamRouteMap.postDisableRoutes();
 }
 
@@ -258,16 +324,28 @@ void AudioRouteManager::executeConfigureRoutingStage()
 
 void AudioRouteManager::executeEnableRoutingStage()
 {
-    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, PathMask | ConfigureMask);
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion, ConfigureMask | PathMask);
+
     mStreamRouteMap.preEnableRoutes();
+
     mPlatformState->applyConfiguration<Audio>();
+
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion,
+                                        ConfigureMask | PathMask | StreamPathMask);
+    mPlatformState->applyConfiguration<Audio>();
+
+    mPlatformState->setCriterion<Audio>(gRoutingStageCriterion,
+                                        ConfigureMask | PathMask | StreamPathMask | PostPathMask);
+    mPlatformState->applyConfiguration<Audio>();
+
     mStreamRouteMap.enableRoutes();
 }
 
 void AudioRouteManager::executeUnmuteRoutingStage()
 {
     mPlatformState->setCriterion<Audio>(gRoutingStageCriterion,
-                                        ConfigureMask | PathMask | FlowMask);
+                                        ConfigureMask | PathMask | StreamPathMask | PostPathMask |
+                                        FlowMask);
     mPlatformState->applyConfiguration<Audio>();
 }
 
@@ -300,8 +378,67 @@ void AudioRouteManager::setRouteCriteriaForDisable()
     }
 }
 
-bool AudioRouteManager::onEvent(int)
+bool AudioRouteManager::onEvent(int fd)
 {
+    if (fd == mEventThread->getFd(FdFromSstDriver)) {
+        bool audioSubsystemAvailable = mAudioSubsystemAvailable;
+#ifdef EMULATE_UEVENT
+        int clientSocketFd = accept(mUEventFd, NULL, NULL);
+        if (clientSocketFd < 0) {
+            Log::Error() << __FUNCTION__ << ": accept failed";
+            return false;
+        }
+        uint8_t data;
+        uint8_t *pData = &data;
+        uint32_t size = sizeof(data);
+        while (size) {
+            int32_t accessedSize = ::recv(clientSocketFd, pData, size, MSG_NOSIGNAL);
+            if (!accessedSize || accessedSize == -1) {
+                return false;
+            }
+            size -= accessedSize;
+            pData += accessedSize;
+        }
+        if (data == RECOVER) {
+            Log::Debug() << __FUNCTION__ << ": Audio Subsystem Up and Running again :-)";
+            audioSubsystemAvailable = true;
+        } else if (data == CRASH) {
+            Log::Debug() << __FUNCTION__ << ": Audio Subsystem down :-(";
+            audioSubsystemAvailable = false;
+        } else {
+            Log::Debug() << __FUNCTION__ << ": Unrecognized message...";
+            return false;
+        }
+#else
+        char msg[gUEventMsgMaxLeng +1] = {0};
+        char *cp;
+        int n;
+
+        n = uevent_kernel_multicast_recv(mUEventFd, msg, gUEventMsgMaxLeng);
+        if (n <= 0 || n > gUEventMsgMaxLeng) {
+            return false;
+        }
+        msg[n] = '\0';
+        cp = msg;
+        while (cp < msg + n) {
+            if (!strcmp(cp, gRecoverUevent.c_str())) {
+                Log::Warning() << __FUNCTION__ << ": Audio Subsystem Up and Running again :-)";
+                audioSubsystemAvailable = true;
+                break;
+            } else if (!strcmp(cp, gCrashUevent.c_str())) {
+                Log::Warning() << __FUNCTION__ << ": Audio Subsystem down :-(";
+                audioSubsystemAvailable = false;
+                break;
+            }
+            cp += strlen(cp) + 1;
+        }
+#endif
+        AutoW lock(mRoutingLock);
+        if (audioSubsystemAvailable != mAudioSubsystemAvailable) {
+            mAudioSubsystemAvailable = audioSubsystemAvailable;
+            doReconsiderRouting();
+        }
+    }
     return false;
 }
 
@@ -459,9 +596,11 @@ status_t AudioRouteManager::setParameters(const std::string &keyValuePair, bool 
     AutoW lock(mRoutingLock);
     bool hasChanged = false;
     status_t ret = mPlatformState->setParameters(keyValuePair, hasChanged);
-    if (hasChanged) {
-        reconsiderRoutingUnsafe(isSynchronous);
-    }
+
+    // Inconditionnaly reconsider the routing as even if the parameters are the same, concurrent
+    // streams with identical settings may have been stopped/started.
+    reconsiderRoutingUnsafe(isSynchronous);
+
     KeyValuePairs pairs(keyValuePair);
     int device;
     status_t status = pairs.get<int>(AUDIO_PARAMETER_DEVICE_CONNECT, device);

@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2015
+# Copyright (C) Intel 2015-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+ifeq (ENABLE_HOST_VERSION,1)
 LOCAL_PATH := $(call my-dir)
 
-PFW_CORE := external/parameter-framework/core
+PFW_CORE := external/parameter-framework/upstream
 BUILD_PFW_SETTINGS := $(PFW_CORE)/support/android/build_pfw_settings.mk
 PFW_DEFAULT_SCHEMAS_DIR := $(PFW_CORE)/Schemas
 PFW_SCHEMAS_DIR := $(PFW_DEFAULT_SCHEMAS_DIR)
@@ -182,3 +182,6 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE_STEM)
 LOCAL_MODULE_PATH := $(HOST_OUT)/etc
 LOCAL_MODULE_RELATIVE_PATH := parameter-framework
 include $(BUILD_PREBUILT)
+
+
+endif

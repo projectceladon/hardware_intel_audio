@@ -1,6 +1,5 @@
 #
-#
-# Copyright (C) Intel 2015-2016
+# Copyright (C) 2016 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,25 +17,19 @@
 
 LOCAL_PATH := $(call my-dir)
 
-#######################################################################
-# Target Component Build
-
 include $(CLEAR_VARS)
 
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES := \
+    bionic
 
-LOCAL_MODULE := libaudio_hal_utilities
+LOCAL_SRC_FILES := UeventEmulate.cpp
 
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_SHARED_LIBRARIES := libcutils libutils
 
-#######################################################################
-# Host Component Build
-ifeq (ENABLE_HOST_VERSION,1)
-include $(CLEAR_VARS)
+LOCAL_CFLAGS += -Wall -Wextra -Werror -Wno-unused-parameter
 
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR_EXECUTABLES)
 
-LOCAL_MODULE := libaudio_hal_utilities_host
+LOCAL_MODULE := uevent_emulate
 
-include $(BUILD_HOST_STATIC_LIBRARY)
-endif
+include $(BUILD_EXECUTABLE)

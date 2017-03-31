@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <stddef.h>
 #include <media/AudioBufferProvider.h>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <gtest/gtest.h>
 #include <stdint.h>
 
@@ -54,12 +54,10 @@ public:
      * @param[out] buffer audio data to be provided to the client.
      *                    Buffer shall not be taken into account by the client if
      *                    error code is returned.
-     * @param[in] pts local time when the next sample yielded by getNextBuffer will be rendered.
      *
      * @return status_t OK if buffer provided, error code otherwise.
      */
-    virtual android::status_t getNextBuffer(android::AudioBufferProvider::Buffer *buffer,
-                                            int64_t /*pts*/)
+    virtual android::status_t getNextBuffer(android::AudioBufferProvider::Buffer *buffer)
     {
 
         buffer->raw = &sourceBuffer[readPos];

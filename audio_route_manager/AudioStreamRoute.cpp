@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include <AudioCommsAssert.hpp>
 #include <utilities/Log.hpp>
 #include <tinyalsa/asoundlib.h>
+#include <policy.h>
 
 using std::string;
 using audio_comms::utilities::Log;
@@ -35,7 +36,7 @@ AudioStreamRoute::AudioStreamRoute(const string &name, bool isOut)
       mCurrentStream(NULL),
       mNewStream(NULL),
       mEffectSupported(0),
-      mAudioDevice(StreamLib::createAudioDevice())
+      mAudioDevice(nullptr)
 {
 }
 
@@ -56,6 +57,7 @@ android::status_t AudioStreamRoute::loadChannelMaskCapabilities()
 
     int cardIndex = AudioUtils::getCardIndexByName(getCardName());
     if (cardIndex < 0) {
+        Log::Error() << __FUNCTION__ << ": Failed to get Card Name index " << cardIndex;
         return android::BAD_VALUE;
     }
     mixer = mixer_open(cardIndex);
@@ -92,8 +94,8 @@ android::status_t AudioStreamRoute::loadChannelMaskCapabilities()
         // Fallback on stereo channel map in case of no information retrieved from device
         Log::Error() << __FUNCTION__ << ": No Channel info retrieved, falling back to stereo";
         audio_channel_mask_t mask =
-                isOut() ? audio_channel_out_mask_from_count(AUDIO_CHANNEL_OUT_STEREO) :
-                          audio_channel_in_mask_from_count(AUDIO_CHANNEL_IN_STEREO);
+                isOut() ? AUDIO_CHANNEL_OUT_STEREO :
+                          AUDIO_CHANNEL_IN_STEREO;
         mCapabilities.supportedChannelMasks.push_back(mask);
     }
     mixer_close(mixer);
@@ -135,12 +137,20 @@ const StreamRouteConfig AudioStreamRoute::getRouteConfig() const
     StreamRouteConfig config = mConfig;
     config.rate = mCurrentRate;
     config.format = mCurrentFormat;
-    config.channels = popcount(mCurrentChannelMask);
+    config.channels = isOut() ? audio_channel_count_from_out_mask(mCurrentChannelMask) :
+                      audio_channel_count_from_in_mask(mCurrentChannelMask);
     return config;
 }
 
 void AudioStreamRoute::updateStreamRouteConfig(const StreamRouteConfig &config)
 {
+    // Either the name of the Audio Card could be read from proc fs -> use tiny alsa library
+    // or the name could not be identified and must be refered by alsa device in asound.conf file
+    bool isAlsaPluginDevice = (AudioUtils::getCardIndexByName(config.cardName) < 0);
+    if (mAudioDevice == nullptr) {
+        mAudioDevice = StreamLib::createAudioDevice(isAlsaPluginDevice);
+    }
+
     Log::Verbose() << __FUNCTION__
                    << ": config for route " << getName() << ":"
                    << "\n\t requirePreEnable=" << config.requirePreEnable
@@ -176,6 +186,7 @@ void AudioStreamRoute::updateStreamRouteConfig(const StreamRouteConfig &config)
 
 android::status_t AudioStreamRoute::route(bool isPreEnable)
 {
+    AUDIOCOMMS_ASSERT(mAudioDevice != nullptr, "No valid device attached");
     if (isPreEnable == isPreEnableRequired()) {
 
         android::status_t err = mAudioDevice->open(getCardName(), getPcmDeviceId(),
@@ -211,6 +222,7 @@ android::status_t AudioStreamRoute::route(bool isPreEnable)
 
 void AudioStreamRoute::unroute(bool isPostDisable)
 {
+    AUDIOCOMMS_ASSERT(mAudioDevice != nullptr, "No valid device attached");
     if (!isPostDisable) {
 
         if (!mAudioDevice->isOpened()) {
@@ -287,7 +299,16 @@ bool AudioStreamRoute::isMatchingWithStream(const IoStream &stream) const
            areFlagsMatching(stream.getFlagMask()) &&
            areUseCasesMatching(stream.getUseCaseMask()) &&
            implementsEffects(stream.getEffectRequested()) &&
+           supportDeviceAddress(stream.getDeviceAddress(), stream.getDevices()) &&
            supportStreamConfig(stream);
+}
+
+bool AudioStreamRoute::supportDeviceAddress(const std::string& streamDeviceAddress, audio_devices_t device) const
+{
+    Log::Verbose() << __FUNCTION__ << ": gustave route device address " << mConfig.deviceAddress
+                 << ", stream device address " << streamDeviceAddress;
+    // If both stream and route do not specify a supported device address, consider as matching
+    return (!device_distinguishes_on_address(device) || (streamDeviceAddress == mConfig.deviceAddress));
 }
 
 bool AudioStreamRoute::supportDevices(audio_devices_t streamDeviceMask) const
@@ -356,6 +377,30 @@ uint32_t AudioStreamRoute::getLatencyInUs() const
 uint32_t AudioStreamRoute::getPeriodInUs() const
 {
     return getSampleSpec().convertFramesToUsec(mConfig.periodSize);
+}
+
+inline bool AudioStreamRoute::supportRate(uint32_t rate) const
+{
+    Log::Verbose() << __FUNCTION__ << ": "
+                   << (mCapabilities.supportRate(rate) ? "supported by route" :
+                      (resamplerSupported(rate) ? "conversion supported" : "NOT SUPPORTED"));
+    return mCapabilities.supportRate(rate) || resamplerSupported(rate);
+}
+
+inline bool AudioStreamRoute::supportFormat(audio_format_t format) const
+{
+    Log::Verbose() << __FUNCTION__ << ": "
+                   << (mCapabilities.supportFormat(format) ? "supported by route" :
+                      (reformatterSupported(format) ? "conversion supported" : "NOT SUPPORTED"));
+    return mCapabilities.supportFormat(format) || reformatterSupported(format);
+}
+
+inline bool AudioStreamRoute::supportChannelMask(audio_channel_mask_t channelMask) const
+{
+    Log::Verbose() << __FUNCTION__ << ": "
+                   << (mCapabilities.supportChannelMask(channelMask) ? "supported by route" :
+                      (remapperSupported(channelMask) ? "conversion supported" : "NOT SUPPORTED"));
+    return mCapabilities.supportChannelMask(channelMask) || remapperSupported(channelMask);
 }
 
 } // namespace intel_audio
