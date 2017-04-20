@@ -18,7 +18,7 @@
 #include "TinyAlsaAudioDevice.hpp"
 #include "TinyAlsaIoStream.hpp"
 #include <IStreamRoute.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using audio_comms::utilities::Log;
@@ -32,7 +32,7 @@ namespace intel_audio
 
 pcm *TinyAlsaIoStream::getPcmDevice() const
 {
-    AUDIOCOMMS_ASSERT(mDevice != NULL, "Null audio device attached to stream");
+    AUDIOUTILITIES_ASSERT(mDevice != NULL, "Null audio device attached to stream");
     return mDevice->getPcmDevice();
 }
 

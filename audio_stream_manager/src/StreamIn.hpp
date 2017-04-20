@@ -33,7 +33,7 @@ private:
 
 public:
     StreamIn(Device *parent, audio_io_handle_t handle, uint32_t flagMask, audio_source_t source,
-             audio_devices_t devices);
+             audio_devices_t devices, const std::string &address);
 
     virtual ~StreamIn();
     virtual android::status_t set(audio_config_t &config);
@@ -45,11 +45,11 @@ public:
     virtual int setGain(float /* gain */) { return android::OK; }
     virtual android::status_t read(void *buffer, size_t &bytes);
     virtual uint32_t getInputFramesLost() const;
+    virtual android::status_t getCapturePosition(int64_t &frames, int64_t &time);
     virtual android::status_t setDevice(audio_devices_t device);
 
     // From AudioBufferProvider
-    virtual android::status_t getNextBuffer(android::AudioBufferProvider::Buffer *buffer,
-                                            int64_t presentationTimeStamp = kInvalidPTS);
+    virtual android::status_t getNextBuffer(android::AudioBufferProvider::Buffer *buffer);
 
     /** @note API not implemented in input stream*/
     virtual void releaseBuffer(android::AudioBufferProvider::Buffer */* buffer */) {}
@@ -307,6 +307,8 @@ private:
     unsigned int mFramesLost;
 
     ssize_t mFramesIn; /**< frames available in stream input buffer. */
+
+    ssize_t mFramesInCount; /**< Total frames read. */
 
     /**
      * This variable represents the number of frames of in mProcessingBuffer.

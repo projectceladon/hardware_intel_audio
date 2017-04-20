@@ -15,7 +15,7 @@
  */
 #pragma once
 
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <map>
 

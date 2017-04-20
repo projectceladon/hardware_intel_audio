@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 
 #include "AudioUtils.hpp"
 #include "SampleSpec.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <cerrno>
 #include <convert.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ namespace intel_audio
 
 uint32_t AudioUtils::alignOn16(uint32_t u)
 {
-    AUDIOCOMMS_ASSERT((u / mFrameAlignementOn16) <=
+    AUDIOUTILITIES_ASSERT((u / mFrameAlignementOn16) <=
                       (numeric_limits<uint32_t>::max() / mFrameAlignementOn16),
                       "value to align exceeding limit");
     return (u + (mFrameAlignementOn16 - 1)) & ~(mFrameAlignementOn16 - 1);
@@ -56,13 +56,13 @@ size_t AudioUtils::convertSrcToDstInFrames(size_t frames,
                                            const SampleSpec &ssSrc,
                                            const SampleSpec &ssDst)
 {
-    AUDIOCOMMS_ASSERT(ssSrc.getSampleRate() != 0, "Source Sample Rate not set");
-    AUDIOCOMMS_ASSERT(ssDst.getSampleRate() != 0, "Destination Sample Rate not set");
-    AUDIOCOMMS_ASSERT(frames < (numeric_limits<uint64_t>::max() / ssDst.getSampleRate()),
+    AUDIOUTILITIES_ASSERT(ssSrc.getSampleRate() != 0, "Source Sample Rate not set");
+    AUDIOUTILITIES_ASSERT(ssDst.getSampleRate() != 0, "Destination Sample Rate not set");
+    AUDIOUTILITIES_ASSERT(frames < (numeric_limits<uint64_t>::max() / ssDst.getSampleRate()),
                       "Overflow detected");
     int64_t dstFrames = ((uint64_t)frames * ssDst.getSampleRate() + ssSrc.getSampleRate() - 1) /
                         ssSrc.getSampleRate();
-    AUDIOCOMMS_ASSERT(dstFrames <= numeric_limits<ssize_t>::max(),
+    AUDIOUTILITIES_ASSERT(dstFrames <= numeric_limits<ssize_t>::max(),
                       "conversion exceeding limit");
     return dstFrames;
 }
@@ -78,6 +78,9 @@ audio_format_t AudioUtils::convertTinyToHalFormat(pcm_format format)
         break;
     case PCM_FORMAT_S24_LE:
         convFormat = AUDIO_FORMAT_PCM_8_24_BIT;
+        break;
+    case PCM_FORMAT_S32_LE:
+        convFormat = AUDIO_FORMAT_PCM_32_BIT;
         break;
     default:
         Log::Error() << __FUNCTION__ << ": format not recognized";
@@ -98,6 +101,9 @@ pcm_format AudioUtils::convertHalToTinyFormat(audio_format_t format)
         break;
     case AUDIO_FORMAT_PCM_8_24_BIT:
         convFormat = PCM_FORMAT_S24_LE; /* PCM_FORMAT_S24_LE is 24-bits in 4-bytes */
+        break;
+    case AUDIO_FORMAT_PCM_32_BIT:
+        convFormat = PCM_FORMAT_S32_LE;
         break;
     default:
         Log::Error() << __FUNCTION__ << ": format not recognized";
@@ -182,7 +188,7 @@ int AudioUtils::getCompressDeviceIndex()
     const char *devName = fileList[0]->d_name;
     Log::Verbose() << __FUNCTION__ << ": compressed device node: " << devName;
 
-    int dev;
+    int dev = 0;
     static const char *compressDevice = "comprCxD";
     if (!convertTo<std::string, int>(devName + strlen(compressDevice), dev)) {
         return -ENODEV;

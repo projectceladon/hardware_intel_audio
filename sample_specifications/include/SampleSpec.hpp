@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,10 +124,14 @@ public:
     {
         return static_cast<audio_format_t>(getSampleSpecItem(FormatSampleSpecItem));
     }
-    void setChannelMask(audio_channel_mask_t channelMask)
+    void setChannelMask(audio_channel_mask_t channelMask, bool isOut)
     {
         mChannelMask = channelMask;
-        setSampleSpecItem(ChannelCountSampleSpecItem, popcount(mChannelMask));
+        if (isOut) {
+            setSampleSpecItem(ChannelCountSampleSpecItem, audio_channel_count_from_out_mask(mChannelMask));
+        } else {
+            setSampleSpecItem(ChannelCountSampleSpecItem, audio_channel_count_from_in_mask(mChannelMask));
+        }
     }
     audio_channel_mask_t getChannelMask() const
     {
@@ -199,6 +203,11 @@ public:
     bool isStereo() const
     {
         return mSampleSpec[ChannelCountSampleSpecItem] == 2;
+    }
+
+    bool isQuad() const
+    {
+        return mSampleSpec[ChannelCountSampleSpecItem] == 4;
     }
 
     /**

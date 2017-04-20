@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 #pragma once
 
 #include <StreamInterface.hpp>
-#include <AudioCommsAssert.hpp>
-#include <NonCopyable.hpp>
+#include <AudioUtilitiesAssert.hpp>
+#include <AudioNonCopyable.hpp>
 #include <hardware/audio.h>
 #include <utils/Errors.h>
 #include <string>
@@ -66,7 +66,7 @@ public:
     static typename Trait::CppStream *release(const typename Trait::CStream *stream)
     {
         typedef typename StreamWrapper<Trait>::Glue Glue;
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         const Glue &glue = *reinterpret_cast<const Glue *>(stream);
         typename Trait::CppStream &cppStream = getCppStream(stream);
         delete glue.mWrapper;
@@ -124,16 +124,16 @@ protected:
 
     static typename Trait::CppStream &getCppStream(const typename Trait::CStream *stream)
     {
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         return getCppStream(&stream->common);
     }
 
     static typename Trait::CppStream &getCppStream(const audio_stream_t *stream)
     {
         typedef typename StreamWrapper<Trait>::Glue Glue;
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         const Glue &glue = *reinterpret_cast<const Glue *>(stream);
-        AUDIOCOMMS_ASSERT(glue.mCppStream != NULL,
+        AUDIOUTILITIES_ASSERT(glue.mCppStream != NULL,
                           "Inconsistent state: stream" << stream
                                                        << " is not null, but cpp stream is null");
         return *glue.mCppStream;
@@ -191,6 +191,8 @@ private:
     static int wrapSetGain(audio_stream_in_t *stream, float gain);
     static ssize_t wrapRead(audio_stream_in_t *stream, void *buffer, size_t bytes);
     static uint32_t wrapGetInputFramesLost(audio_stream_in_t *stream);
+    static int wrapGetCapturePosition(const audio_stream_in *stream,
+                                               int64_t *frames, int64_t *time);
 };
 
 template <class Trait>

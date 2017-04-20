@@ -57,8 +57,9 @@ static const uint32_t gOffloadTransferIntervalInSec = 8;
 static const uint32_t gCodecOffloadDefaultBitrateInBps = 128000;
 
 CompressedStreamOut::CompressedStreamOut(Device *parent, audio_io_handle_t handle,
-                                         uint32_t flagMask, audio_devices_t devices)
-    : StreamOut(parent, handle, flagMask, devices),
+                                         uint32_t flagMask, audio_devices_t devices,
+                                         const std::string &address)
+    : StreamOut(parent, handle, flagMask, devices, address),
       mCompress(NULL),
       mVolume(SST_VOLUME_MUTE),
       mIsVolumeChangeRequestPending(false),
@@ -116,7 +117,7 @@ status_t CompressedStreamOut::set(audio_config_t &config)
     }
     setFormat(config.format);
     setSampleRate(config.sample_rate);
-    setChannels(config.channel_mask);
+    setChannels(config.channel_mask, true);
 
     mCodec.avgBitRate = config.offload_info.bit_rate;
     mCodec.sampleRate = config.sample_rate;
@@ -529,6 +530,16 @@ android::status_t CompressedStreamOut::getRenderPosition(uint32_t &dspFrames) co
     return android::OK;
 }
 
+android::status_t CompressedStreamOut::getPresentationPosition(uint64_t &frames, struct timespec &timestamp) const
+{
+    uint32_t dsp_frames;
+
+    getRenderPosition(dsp_frames);
+
+    frames = (uint64_t) dsp_frames;
+    clock_gettime(CLOCK_MONOTONIC, &timestamp);
+    return android::OK;
+}
 
 status_t CompressedStreamOut::setCallback(stream_callback_t callback, void *cookie)
 {

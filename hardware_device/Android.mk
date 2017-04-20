@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2014-2015
+# Copyright (C) Intel 2014-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ include $(BUILD_STATIC_LIBRARY)
 
 # Host build
 #######################################################################
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
@@ -62,7 +63,7 @@ include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/test \
-    external/gtest/include \
+    external/gtest/include
 
 LOCAL_SRC_FILES := \
     test/DeviceWrapperTest.cpp \
@@ -73,7 +74,7 @@ LOCAL_STATIC_LIBRARIES := libaudio_comms_utilities_host
 LOCAL_STATIC_LIBRARIES += \
     libaudiohw_intel_host \
     libgtest_host \
-    libgtest_main_host \
+    libgtest_main_host
 
 LOCAL_CFLAGS := -ggdb -O0
 LOCAL_MODULE_TAGS := optional
@@ -83,6 +84,7 @@ include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 # Cannot use $(BUILD_HOST_NATIVE_TEST) because of compilation flag
 # misalignment against gtest mk files
 include $(BUILD_HOST_EXECUTABLE)
+endif
 
 include $(OPTIONAL_QUALITY_RUN_TEST)
 

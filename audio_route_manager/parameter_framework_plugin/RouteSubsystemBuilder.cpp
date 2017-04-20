@@ -1,37 +1,30 @@
 /*
- * INTEL CONFIDENTIAL
+ * Copyright (C) 2013-2017 Intel Corporation
  *
- * Copyright (c) 2013-2014 Intel Corporation All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The source code contained or described herein and all documents related to
- * the source code ("Material") are owned by Intel Corporation or its suppliers
- * or licensors.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Title to the Material remains with Intel Corporation or its suppliers and
- * licensors. The Material contains trade secrets and proprietary and
- * confidential information of Intel or its suppliers and licensors. The
- * Material is protected by worldwide copyright and trade secret laws and treaty
- * provisions. No part of the Material may be used, copied, reproduced,
- * modified, published, uploaded, posted, transmitted, distributed, or disclosed
- * in any way without Intel's prior express written permission.
- *
- * No license under any patent, copyright, trade secret or other intellectual
- * property right is granted to or conferred upon you by disclosure or delivery
- * of the Materials, either expressly, by implication, inducement, estoppel or
- * otherwise. Any license under such intellectual property rights must be
- * express and approved by Intel in writing.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-#include "SubsystemLibrary.h"
-#include "NamedElementBuilderTemplate.h"
+#include <Plugin.h>
+#include "LoggingElementBuilderTemplate.h"
 #include "RouteSubsystem.hpp"
 
 static const char *const ROUTE_SUBSYSTEM_NAME = "ROUTEMGR";
 extern "C"
 {
-void getROUTESubsystemBuilder(CSubsystemLibrary *subsystemLibrary)
+void PARAMETER_FRAMEWORK_PLUGIN_ENTRYPOINT_V1(CSubsystemLibrary *subsystemLibrary,
+                                              core::log::Logger &logger)
 {
     subsystemLibrary->addElementBuilder(ROUTE_SUBSYSTEM_NAME,
-                                        new TNamedElementBuilderTemplate<RouteSubsystem>());
+                                        new TLoggingElementBuilderTemplate<RouteSubsystem>(logger));
 }
 }

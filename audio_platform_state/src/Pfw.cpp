@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,15 +85,20 @@ public:
           mTag(tagName)
     {}
 
-    virtual void log(bool isWarning, const string &log)
+    virtual void info(const string &log)
     {
         const static string format = "-Instance: ";
 
-        if (isWarning) {
-            Log::Warning() << mTag << format << log;
-        } else if (mVerbose == "true") {
+        if (mVerbose == "true") {
             Log::Debug() << mTag << format << log;
         }
+    }
+
+    virtual void warning(const string &log)
+    {
+        const static string format = "-Instance: ";
+
+        Log::Warning() << mTag << format << log;
     }
 };
 
@@ -112,6 +117,17 @@ Pfw<Trait>::Pfw()
 
     mConnector = new CParameterMgrPlatformConnector(pfwConfigurationFilePath);
     mConnector->setLogger(mConnectorLogger);
+    string error;
+    // PFW fail safe mode: a missing subsystem will fallback on virtual subsystem
+    bool isFailSafeActive(Property<bool>("persist.media.pfw.failsafe", true).getValue());
+    if (!mConnector->setFailureOnMissingSubsystem(!isFailSafeActive, error)) {
+        Log::Error() << __FUNCTION__ << ": Failure " <<
+            (isFailSafeActive ? "activated" : "deactivated")
+                     << " on missing subsystem, (error = " << error << ")";
+    } else {
+        Log::Warning() << __FUNCTION__ << ": Fail safe on missing subsystem is "
+                       << (isFailSafeActive ? "active" : "inactive");
+    }
     mParameterHelper = new ParameterMgrHelper(mConnector);
 }
 
@@ -176,7 +192,7 @@ template <class Trait>
 void Pfw<Trait>::addCriterionTypeValuePair(const string &typeName, uint32_t numericValue,
                                            const string &literalValue)
 {
-    AUDIOCOMMS_ASSERT(collectionHasElement<CriterionType *>(typeName, mCriterionTypes),
+    AUDIOUTILITIES_ASSERT(collectionHasElement<CriterionType *>(typeName, mCriterionTypes),
                       "CriterionType " << typeName.c_str() << " not found");
     CriterionType *criterionType = mCriterionTypes[typeName];
     if (criterionType->hasValuePairByName(literalValue)) {
@@ -211,7 +227,7 @@ void Pfw<Trait>::loadCriterionType(cnode &root, bool isInclusive)
 
                     char *first = strtok(valueName, ":");
                     char *second = strtok(NULL, ":");
-                    AUDIOCOMMS_ASSERT((first != NULL) && (strlen(first) != 0) &&
+                    AUDIOUTILITIES_ASSERT((first != NULL) && (strlen(first) != 0) &&
                                       (second != NULL) && (strlen(second) != 0),
                                       "invalid value pair");
 
@@ -320,6 +336,10 @@ void Pfw<Trait>::addRogueParameter(const string &typeName, const string &paramKe
         RogueParameter<uint32_t> *paramRogue =
             new RogueParameter<uint32_t>(paramKey, name, mConnector, defaultValue);
         addParameter(paramRogue, valuePairs, parameterVector);
+    } else if (typeName == gSignedIntegerTypeTag) {
+        RogueParameter<int32_t> *paramRogue =
+            new RogueParameter<int32_t>(paramKey, name, mConnector, defaultValue);
+        addParameter(paramRogue, valuePairs, parameterVector);
     } else if (typeName == gStringTypeTag) {
         RogueParameter<string> *paramRogue =
             new RogueParameter<string>(paramKey, name, mConnector, defaultValue);
@@ -372,7 +392,7 @@ void Pfw<Trait>::loadRogueParameterType(cnode &root, std::vector<Parameter *> &p
 
     parseChildren(root, rogueParameterPath, defaultValue, paramKeyName, typeName, valuePairs);
 
-    AUDIOCOMMS_ASSERT(!paramKeyName.empty(), "Rogue Parameter " << rogueParameterName <<
+    AUDIOUTILITIES_ASSERT(!paramKeyName.empty(), "Rogue Parameter " << rogueParameterName <<
                       " not associated to any Android parameter");
 
     addRogueParameter(typeName, paramKeyName, rogueParameterPath, defaultValue, valuePairs,
@@ -406,7 +426,7 @@ template <typename T>
 T *Pfw<Trait>::getElement(const string &name, std::map<string, T *> &elementsMap)
 {
     typename std::map<string, T *>::iterator it = elementsMap.find(name);
-    AUDIOCOMMS_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
+    AUDIOUTILITIES_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
     return it->second;
 }
 
@@ -415,7 +435,7 @@ template <typename T>
 const T *Pfw<Trait>::getElement(const string &name, const std::map<string, T *> &elementsMap) const
 {
     typename std::map<string, T *>::const_iterator it = elementsMap.find(name);
-    AUDIOCOMMS_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
+    AUDIOUTILITIES_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
     return it->second;
 }
 
@@ -436,7 +456,7 @@ void Pfw<Trait>::loadCriteria(cnode &root, std::vector<Parameter *> &parameterVe
 template <class Trait>
 std::vector<AndroidParamMappingValuePair> Pfw<Trait>::parseMappingTable(const char *values)
 {
-    AUDIOCOMMS_ASSERT(values != NULL, "error in parsing file");
+    AUDIOUTILITIES_ASSERT(values != NULL, "error in parsing file");
     char *mappingPairs = strndup(values, strlen(values));
     char *ctx;
     std::vector<AndroidParamMappingValuePair> valuePairs;
@@ -447,7 +467,7 @@ std::vector<AndroidParamMappingValuePair> Pfw<Trait>::parseMappingTable(const ch
 
             char *first = strtok(mappingPair, ":");
             char *second = strtok(NULL, ":");
-            AUDIOCOMMS_ASSERT((first != NULL) && (strlen(first) != 0) &&
+            AUDIOUTILITIES_ASSERT((first != NULL) && (strlen(first) != 0) &&
                               (second != NULL) && (strlen(second) != 0),
                               "invalid value pair");
             AndroidParamMappingValuePair pair = std::make_pair(first, second);
@@ -463,7 +483,7 @@ template <class Trait>
 void Pfw<Trait>::addCriterion(const string &name, const string &typeName,
                               const string &defaultValue)
 {
-    AUDIOCOMMS_ASSERT(!collectionHasElement<Criterion *>(name, mCriteria),
+    AUDIOUTILITIES_ASSERT(!collectionHasElement<Criterion *>(name, mCriteria),
                       "Criterion " << name << " already added for " << mTag << " PFW");
     if (collectionHasElement<CriterionType *>(gStateChangedCriterionType, mCriterionTypes) &&
         name != gStateChangedCriterion) {

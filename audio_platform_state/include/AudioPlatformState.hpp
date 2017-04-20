@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 #include "AudioHalConf.hpp"
 #include "Parameter.hpp"
 #include <Pfw.hpp>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <KeyValuePairs.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <Direction.hpp>
 #include <utils/Errors.h>
 #include <utils/RWLock.h>

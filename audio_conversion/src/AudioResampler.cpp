@@ -17,7 +17,7 @@
 #define LOG_TAG "AudioResampler"
 
 #include "AudioResampler.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <audio_utils/resampler.h>
 #include <limits.h>
@@ -74,7 +74,7 @@ status_t AudioResampler::configure(const SampleSpec &ssSrc, const SampleSpec &ss
         return status;
     }
 
-    AUDIOCOMMS_ASSERT(mResampler != NULL, "Audio Utils failed to instantiate a resampler");
+    AUDIOUTILITIES_ASSERT(mResampler != NULL, "Audio Utils failed to instantiate a resampler");
 
     mConvertSamplesFct = static_cast<SampleConverter>(&AudioResampler::resampleFrames);
     return OK;

@@ -21,7 +21,7 @@
 #include <audio_effects/effect_aec.h>
 #include <audio_effects/effect_ns.h>
 #include <audio_effects/effect_agc.h>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <functional>
 #include <algorithm>
@@ -51,7 +51,7 @@ void AudioEffectSession::setIoHandle(int ioHandle)
 
 status_t AudioEffectSession::addEffect(AudioEffect *effect)
 {
-    AUDIOCOMMS_ASSERT(effect != NULL, "trying to add null Effect");
+    AUDIOUTILITIES_ASSERT(effect != NULL, "trying to add null Effect");
     effect->setSession(this);
     mEffectsList.push_back(effect);
     return OK;
@@ -59,7 +59,7 @@ status_t AudioEffectSession::addEffect(AudioEffect *effect)
 
 AudioEffect *AudioEffectSession::findEffectByUuid(const effect_uuid_t *uuid)
 {
-    AUDIOCOMMS_ASSERT(uuid != NULL, "Invalid UUID");
+    AUDIOUTILITIES_ASSERT(uuid != NULL, "Invalid UUID");
     EffectListIterator it;
     it = std::find_if(mEffectsList.begin(), mEffectsList.end(), std::bind2nd(MatchUuid(), uuid));
 
@@ -68,7 +68,7 @@ AudioEffect *AudioEffectSession::findEffectByUuid(const effect_uuid_t *uuid)
 
 status_t AudioEffectSession::createEffect(const effect_uuid_t *uuid, effect_handle_t *interface)
 {
-    AUDIOCOMMS_ASSERT(uuid != NULL, "Invalid UUID");
+    AUDIOUTILITIES_ASSERT(uuid != NULL, "Invalid UUID");
     AudioEffect *effect = findEffectByUuid(uuid);
     if (effect == NULL) {
         Log::Error() << __FUNCTION__ << ": could not find effect for requested uuid";
@@ -86,7 +86,7 @@ status_t AudioEffectSession::createEffect(const effect_uuid_t *uuid, effect_hand
 
 status_t AudioEffectSession::removeEffect(AudioEffect *effect)
 {
-    AUDIOCOMMS_ASSERT(effect != NULL, "trying to remove null Effect");
+    AUDIOUTILITIES_ASSERT(effect != NULL, "trying to remove null Effect");
     Log::Debug() << __FUNCTION__ << ": requesting to remove effect "
                  << effect->getDescriptor()->name << " on session=" << mId;
     mEffectsCreatedList.remove(effect);

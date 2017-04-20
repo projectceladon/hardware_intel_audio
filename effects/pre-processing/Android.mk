@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2015
+# Copyright (C) Intel 2013-2016
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,14 +49,14 @@ effect_pre_proc_includes_dir_target := \
 
 effect_pre_proc_static_lib += \
     libaudio_comms_utilities \
-    libaudio_comms_convert \
+    libaudio_comms_convert
 
 effect_pre_proc_static_lib_host += \
-    $(foreach lib, $(effect_pre_proc_static_lib), $(lib)_host) \
+    $(foreach lib, $(effect_pre_proc_static_lib), $(lib)_host)
 
 effect_pre_proc_static_lib_target += \
     $(effect_pre_proc_static_lib) \
-    libmedia_helper \
+    libmedia_helper
 
 effect_pre_proc_shared_lib_target += \
     libutils  \
@@ -109,7 +109,7 @@ include $(BUILD_STATIC_LIBRARY)
 
 #######################################################################
 # Build for host
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
@@ -122,6 +122,7 @@ LOCAL_MODULE := liblpepreprocessinghelper_host
 LOCAL_MODULE_OWNER := intel
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 include $(BUILD_HOST_STATIC_LIBRARY)
+endif
 
 # Component functional test
 #######################################################################
@@ -148,7 +149,7 @@ audio_effects_functional_test_defines += -Wall -Werror -ggdb -O0
 
 ###############################
 # Functional test target
-
+ifeq (ENABLE_HOST_VERSION,1)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := audio_effects_functional_test
@@ -161,5 +162,6 @@ LOCAL_SHARED_LIBRARIES := $(audio_effects_functional_test_shared_lib_target)
 LOCAL_MODULE_TAGS := optional
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
 include $(BUILD_NATIVE_TEST)
+endif
 
 include $(OPTIONAL_QUALITY_ENV_TEARDOWN)

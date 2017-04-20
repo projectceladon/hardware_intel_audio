@@ -18,7 +18,7 @@
 #include "Criterion.hpp"
 #include "CriterionType.hpp"
 #include "ParameterMgrPlatformConnector.h"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using std::string;
@@ -52,10 +52,10 @@ Criterion::Criterion(const string &name,
 
 void Criterion::init(int32_t defaultValue)
 {
-    AUDIOCOMMS_ASSERT(mCriterionType != NULL, "NULL criterion Type");
+    AUDIOUTILITIES_ASSERT(mCriterionType != NULL, "NULL criterion Type");
     mSelectionCriterionInterface =
         mParameterMgrConnector->createSelectionCriterion(mName, mCriterionType->getTypeInterface());
-    AUDIOCOMMS_ASSERT(mSelectionCriterionInterface != NULL, "NULL criterion interface");
+    AUDIOUTILITIES_ASSERT(mSelectionCriterionInterface != NULL, "NULL criterion interface");
     mValue = defaultValue;
     setCriterionState();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <NonCopyable.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioNonCopyable.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <media/AudioEffect.h>
 #include <binder/IServiceManager.h>
@@ -101,7 +101,7 @@ public:
         free(mParam);
         mSize = size;
         mParam = reinterpret_cast<effect_param_t *>(malloc(mSize));
-        AUDIOCOMMS_ASSERT(mParam != NULL, "Could not allocate effect param object");
+        AUDIOUTILITIES_ASSERT(mParam != NULL, "Could not allocate effect param object");
         memcpy(mParam, param, mSize);
 
         audio_comms::utilities::Log::Verbose() << __FUNCTION__

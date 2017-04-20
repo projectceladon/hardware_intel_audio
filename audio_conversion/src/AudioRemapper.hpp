@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 #pragma once
 
 #include "AudioConverter.hpp"
+#include <utility>
+#include <vector>
 
 namespace intel_audio
 {
@@ -29,8 +31,11 @@ private:
     {
 
         Left = 0,
-        Right
+        Right,
+        BackLeft,
+        BackRight
     };
+    static const std::vector<std::pair<uint32_t, uint32_t> > mSupportedConversions;
 
 public:
     /**
@@ -40,6 +45,8 @@ public:
      *            converter is working on.
      */
     AudioRemapper(SampleSpecItem sampleSpecItem);
+
+    static bool supportRemap(uint32_t srcChannels, uint32_t dstChannels);
 
 private:
     /**
@@ -69,9 +76,10 @@ private:
     android::status_t configure();
 
     /**
-     * Remap from stereo to mono in typed format.
+     * Remap simply from M-channels to N-channels in typed format.
      *
-     * Convert a stereo source into a mono destination in typed format.
+     * Convert a multi N-channels source in a mutli M-channels destination in typed format
+     * by averaging the source and propagating the averaged value on all channels of the destination
      *
      * @tparam type Audio data format from S16 to S32, no other type allowed.
      * @param[in] src the source buffer.
@@ -83,27 +91,17 @@ private:
      * @return error code.
      */
     template <typename type>
-    android::status_t convertStereoToMono(const void *src,
+    android::status_t convertMultiNToMultiM(const void *src, void *dst, const size_t inFrames,
+                                            size_t *outFrames);
+
+    template <typename type>
+    android::status_t convertStereoToQuad(const void *src,
                                           void *dst,
                                           const size_t inFrames,
                                           size_t *outFrames);
 
-    /**
-     * Remap from mono to stereo in typed format.
-     *
-     * Convert a mono source into a stereo destination in typed format.
-     *
-     * @tparam type Audio data format from S16 to S32, no other type allowed.
-     * @param[in] src the source buffer.
-     * @param[out] dst the destination buffer, the caller must ensure the destination
-     *             is large enough.
-     * @param[in] inFrames number of input frames.
-     * @param[out] outFrames output frames processed.
-     *
-     * @return error code.
-     */
     template <typename type>
-    android::status_t convertMonoToStereo(const void *src,
+    android::status_t convertQuadToStereo(const void *src,
                                           void *dst,
                                           const size_t inFrames,
                                           size_t *outFrames);

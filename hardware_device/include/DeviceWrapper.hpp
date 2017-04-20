@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 
 #include <DeviceInterface.hpp>
 #include <StreamWrapper.hpp>
-#include <AudioCommsAssert.hpp>
-#include <NonCopyable.hpp>
+#include <AudioUtilitiesAssert.hpp>
+#include <AudioNonCopyable.hpp>
 #include <string.h> /* for strdup */
 
 namespace intel_audio
@@ -119,7 +119,7 @@ template <class Device, int CDeviceApiVersion>
 Device &DeviceWrapper<Device, CDeviceApiVersion>::getCppDevice(const audio_hw_device *device)
 {
     const Glue *glue = reinterpret_cast<const Glue *>(device);
-    AUDIOCOMMS_ASSERT(glue != NULL && glue->mCppDevice != NULL, "Invalid cpp device");
+    AUDIOUTILITIES_ASSERT(glue != NULL && glue->mCppDevice != NULL, "Invalid cpp device");
     return *glue->mCppDevice;
 }
 
@@ -229,7 +229,7 @@ int DeviceWrapper<Device, CDeviceApiVersion>::openOutputStream(struct audio_hw_d
         return error;
     }
 
-    AUDIOCOMMS_ASSERT(cppStream != NULL, "Inconsistent return status: stream out is null "
+    AUDIOUTILITIES_ASSERT(cppStream != NULL, "Inconsistent return status: stream out is null "
                                          "but no error raised");
 
     *cStream = OutputStreamWrapper::bind(cppStream);
@@ -248,7 +248,7 @@ void DeviceWrapper<Device, CDeviceApiVersion>::closeOutputStream(struct audio_hw
 {
     StreamOutInterface *cppStream = OutputStreamWrapper::release(stream);
 
-    AUDIOCOMMS_ASSERT(cppStream != NULL, "Inconsistent null stream");
+    AUDIOUTILITIES_ASSERT(cppStream != NULL, "Inconsistent null stream");
 
     getCppDevice(dev).closeOutputStream(cppStream);
 }
@@ -286,7 +286,7 @@ int DeviceWrapper<Device, CDeviceApiVersion>::openInputStream(struct audio_hw_de
         return error;
     }
 
-    AUDIOCOMMS_ASSERT(cppStream != NULL, "Inconsistent return status: stream in is null "
+    AUDIOUTILITIES_ASSERT(cppStream != NULL, "Inconsistent return status: stream in is null "
                                          "but no error raised");
 
     *cStream = InputStreamWrapper::bind(cppStream);
@@ -305,7 +305,7 @@ void DeviceWrapper<Device, CDeviceApiVersion>::closeInputStream(struct audio_hw_
 {
     StreamInInterface *cppStream = InputStreamWrapper::release(stream);
 
-    AUDIOCOMMS_ASSERT(cppStream != NULL, "Inconsistent null stream");
+    AUDIOUTILITIES_ASSERT(cppStream != NULL, "Inconsistent null stream");
 
     getCppDevice(dev).closeInputStream(cppStream);
 }
@@ -400,7 +400,7 @@ size_t DeviceWrapper<Device, CDeviceApiVersion>::getInputBufferSize(
     const struct audio_hw_device *dev,
     const audio_config_t *config)
 {
-    AUDIOCOMMS_ASSERT(config != NULL, "Invalid call, config is NULL");
+    AUDIOUTILITIES_ASSERT(config != NULL, "Invalid call, config is NULL");
 
     return getCppDevice(dev).getInputBufferSize(*config);
 }

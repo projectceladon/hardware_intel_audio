@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #pragma once
 
 #include <hardware/audio_effect.h>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <utils/String8.h>
 #include <string>
 
@@ -157,8 +157,6 @@ private:
      */
     const effect_descriptor_t *mDescriptor;
     const struct effect_interface_s *mItfe; /**< Effect control interface structure. */
-    uint32_t mPreProcessorId; /**< type of preprocessor. */
-    uint32_t mState; /**< state of the effect. */
     AudioEffectSession *mSession; /**< Session on which the effect is on. */
     static const std::string mParamKeyDelimiter; /**< Delimiter chosen to format the key. */
 };

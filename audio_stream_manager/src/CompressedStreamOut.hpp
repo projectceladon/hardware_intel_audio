@@ -79,7 +79,7 @@ private:
 
 public:
     CompressedStreamOut(Device *parent, audio_io_handle_t handle, uint32_t flagMask,
-                        audio_devices_t devices);
+                        audio_devices_t devices, const std::string &address);
 
     virtual ~CompressedStreamOut();
 
@@ -104,6 +104,8 @@ public:
     virtual android::status_t write(const void *buffer, size_t &bytes);
 
     virtual android::status_t getRenderPosition(uint32_t &dspFrames) const;
+
+    virtual android::status_t getPresentationPosition(uint64_t &frames, struct timespec &timestamp) const;
 
     virtual android::status_t setCallback(stream_callback_t, void *);
 

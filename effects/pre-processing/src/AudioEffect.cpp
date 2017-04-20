@@ -19,7 +19,7 @@
 #include "AudioEffect.hpp"
 #include "LpePreProcessing.hpp"
 #include "AudioEffectSession.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <convert.hpp>
 #include <media/AudioSystem.h>
@@ -59,7 +59,7 @@ android::status_t AudioEffect::setSession(AudioEffectSession *session)
 
 const effect_uuid_t *AudioEffect::getUuid() const
 {
-    AUDIOCOMMS_ASSERT(mDescriptor != NULL, "Effects descriptor invalid");
+    AUDIOUTILITIES_ASSERT(mDescriptor != NULL, "Effects descriptor invalid");
     return &mDescriptor->uuid;
 }
 

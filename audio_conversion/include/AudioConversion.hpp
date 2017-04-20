@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2016 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <SampleSpec.hpp>
 #include <media/AudioBufferProvider.h>
-#include <NonCopyable.hpp>
+#include <AudioNonCopyable.hpp>
 #include <list>
 
 namespace intel_audio
@@ -34,6 +34,11 @@ public:
 
     AudioConversion();
     virtual ~AudioConversion();
+
+    static bool supportConversion(const SampleSpec &ssSrc, const SampleSpec &ssDst);
+    static bool supportReformat(audio_format_t srcFormat, audio_format_t dstFormat);
+    static bool supportRemap(uint32_t srcChannels, uint32_t dstChannels);
+    static bool supportResample(uint32_t srcRate, uint32_t dstRate);
 
     /**
      * Configures the conversion chain.
