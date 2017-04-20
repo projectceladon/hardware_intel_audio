@@ -22,7 +22,7 @@
 #include "AudioRemapper.hpp"
 #include "AudioResampler.hpp"
 #include "AudioUtils.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <media/AudioBufferProvider.h>
 #include <stdlib.h>

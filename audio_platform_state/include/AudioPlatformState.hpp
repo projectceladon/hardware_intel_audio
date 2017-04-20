@@ -20,7 +20,7 @@
 #include <Pfw.hpp>
 #include <AudioNonCopyable.hpp>
 #include <KeyValuePairs.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <Direction.hpp>
 #include <utils/Errors.h>
 #include <utils/RWLock.h>

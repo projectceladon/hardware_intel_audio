@@ -15,7 +15,7 @@
  */
 
 #include <StreamWrapper.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 
 
 namespace intel_audio

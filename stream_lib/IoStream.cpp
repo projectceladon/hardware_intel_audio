@@ -16,7 +16,7 @@
 #include "IoStream.hpp"
 #include "AudioDevice.hpp"
 #include <IStreamRoute.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <SampleSpec.hpp>
 #include <utils/RWLock.h>
 #include <utilities/Log.hpp>

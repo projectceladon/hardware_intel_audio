@@ -15,7 +15,7 @@
  */
 #pragma once
 
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <AudioNonCopyable.hpp>
 #include <stdint.h>
 #include <inttypes.h>
@@ -66,7 +66,7 @@ public:
      */
     ISelectionCriterionTypeInterface *getTypeInterface()
     {
-        AUDIOCOMMS_ASSERT(mCriterionTypeInterface != NULL, "Invalid Interface");
+        AUDIOUTILITIES_ASSERT(mCriterionTypeInterface != NULL, "Invalid Interface");
         return mCriterionTypeInterface;
     }
 

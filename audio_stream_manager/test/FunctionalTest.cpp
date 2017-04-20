@@ -16,7 +16,7 @@
 #include "FunctionalTest.hpp"
 #include <media/AudioParameter.h>
 #include <KeyValuePairs.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <utils/Vector.h>
 
@@ -66,7 +66,7 @@ void AudioHalTest::SetUpTestCase()
 
     mAudioModule = reinterpret_cast<audio_module *>(module);
     mDevice = openAudioDevice();
-    AUDIOCOMMS_ASSERT(mDevice != NULL, "Invalid Audio Device");
+    AUDIOUTILITIES_ASSERT(mDevice != NULL, "Invalid Audio Device");
     ASSERT_EQ(NO_ERROR, mDevice->init_check(mDevice)) << "init_check returned !(NO_ERROR)";
 }
 

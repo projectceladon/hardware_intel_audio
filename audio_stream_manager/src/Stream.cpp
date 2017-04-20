@@ -20,7 +20,7 @@
 #include "Stream.hpp"
 #include <Parameters.hpp>
 #include <KeyValuePairs.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <property/Property.hpp>
 #include <AudioConversion.hpp>

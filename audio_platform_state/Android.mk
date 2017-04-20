@@ -59,7 +59,7 @@ component_static_lib := \
     libaudio_comms_convert \
     libaudio_hal_utilities \
     liblpepreprocessinghelper \
-    libaudiocomms_naive_tokenizer \
+    libaudioutilities_naive_tokenizer \
     libproperty \
     audio.routemanager.includes \
     libaudioparameters \

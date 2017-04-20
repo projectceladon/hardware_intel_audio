@@ -18,7 +18,7 @@
 #include "Tokenizer.h"
 #include "RouteMappingKeys.hpp"
 #include "RouteSubsystem.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <cstring>
 
 using std::memcmp;
@@ -60,7 +60,7 @@ AudioStreamRoute::AudioStreamRoute(const std::string &mappingValue,
     string ports = context.getItem(MappingKeyPorts);
     Tokenizer mappingTok(ports, mPortDelimiter);
     std::vector<string> subStrings = mappingTok.split();
-    AUDIOCOMMS_ASSERT(subStrings.size() <= mDualPorts,
+    AUDIOUTILITIES_ASSERT(subStrings.size() <= mDualPorts,
                       "Route cannot be connected to more than 2 ports");
 
     string portSrc = subStrings.size() >= mSinglePort ? subStrings[0] : string();

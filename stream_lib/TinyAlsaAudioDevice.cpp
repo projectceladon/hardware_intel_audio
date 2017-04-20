@@ -18,7 +18,7 @@
 #include "TinyAlsaAudioDevice.hpp"
 #include <AudioUtils.hpp>
 #include <SampleSpec.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using audio_comms::utilities::Log;
@@ -32,8 +32,8 @@ android::status_t TinyAlsaAudioDevice::open(const char *cardName,
                                             const StreamRouteConfig &routeConfig,
                                             bool isOut)
 {
-    AUDIOCOMMS_ASSERT(mPcmDevice == NULL, "Tiny alsa device already opened");
-    AUDIOCOMMS_ASSERT(cardName != NULL, "Null card name");
+    AUDIOUTILITIES_ASSERT(mPcmDevice == NULL, "Tiny alsa device already opened");
+    AUDIOUTILITIES_ASSERT(cardName != NULL, "Null card name");
 
     pcm_config config;
     config.rate = routeConfig.rate;

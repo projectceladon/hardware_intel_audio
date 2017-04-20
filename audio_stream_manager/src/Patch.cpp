@@ -18,7 +18,7 @@
 
 #include "Patch.hpp"
 #include "Port.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <utils/Errors.h>
 #include <utils/Atomic.h>
@@ -51,7 +51,7 @@ audio_devices_t Patch::getDevices(audio_port_role_t role) const
     audio_devices_t devices = AUDIO_DEVICE_NONE;
     for (PortConstIterator portIter = mPorts.begin(); portIter != mPorts.end(); ++portIter) {
         const Port *port = *portIter;
-        AUDIOCOMMS_ASSERT(port != NULL, "Invalid Port");
+        AUDIOUTILITIES_ASSERT(port != NULL, "Invalid Port");
         if (port->getRole() == role &&
             port->getType() == AUDIO_PORT_TYPE_DEVICE) {
             devices |= port->getDeviceType();
@@ -63,7 +63,7 @@ audio_devices_t Patch::getDevices(audio_port_role_t role) const
 std::string Patch::getDeviceAddress(audio_port_role_t role) const
 {
     for (const auto &port : mPorts) {
-        AUDIOCOMMS_ASSERT(port != NULL, "Invalid Port");
+        AUDIOUTILITIES_ASSERT(port != NULL, "Invalid Port");
         if (port->getRole() == role && port->getType() == AUDIO_PORT_TYPE_DEVICE) {
             return port->getDeviceAddress();
         }
@@ -75,7 +75,7 @@ const Port *Patch::getMixPort(audio_port_role_t role) const
 {
     for (PortConstIterator portIter = mPorts.begin(); portIter != mPorts.end(); ++portIter) {
         const Port *port = *portIter;
-        AUDIOCOMMS_ASSERT(port != NULL, "Invalid Port");
+        AUDIOUTILITIES_ASSERT(port != NULL, "Invalid Port");
         if (port->getRole() == role &&
             port->getType() == AUDIO_PORT_TYPE_MIX) {
             return port;
@@ -88,7 +88,7 @@ void Patch::release(bool notify)
 {
     for (PortIterator portIter = mPorts.begin(); portIter != mPorts.end();) {
         Port *portToRelease = *portIter;
-        AUDIOCOMMS_ASSERT(portToRelease != NULL, "Invalid Port");
+        AUDIOUTILITIES_ASSERT(portToRelease != NULL, "Invalid Port");
         portToRelease->release();
         if (notify) {
             getPatchInterface()->onPortReleased(getHandle(), portToRelease->getHandle());
@@ -105,7 +105,7 @@ audio_patch_handle_t Patch::nextUniqueHandle()
 
 PatchInterface *Patch::getPatchInterface()
 {
-    AUDIOCOMMS_ASSERT(mPatchInterface != NULL, "Invalid Patch Interface");
+    AUDIOUTILITIES_ASSERT(mPatchInterface != NULL, "Invalid Patch Interface");
     return mPatchInterface;
 }
 

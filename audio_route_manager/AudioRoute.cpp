@@ -18,7 +18,7 @@
 #include "AudioPort.hpp"
 #include "AudioRoute.hpp"
 #include <cutils/bitops.h>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using std::string;

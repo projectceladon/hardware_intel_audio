@@ -28,7 +28,7 @@
 #include "RouteInterface.hpp"
 #include "IStreamInterface.hpp"
 #include <AudioPlatformState.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include "ParameterMgrPlatformConnector.h"
 #include <ParameterMgrHelper.hpp>
 #include <Criterion.hpp>

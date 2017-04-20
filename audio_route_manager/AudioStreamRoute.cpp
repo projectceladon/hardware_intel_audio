@@ -20,7 +20,7 @@
 #include <AudioUtils.hpp>
 #include <StreamLib.hpp>
 #include <EffectHelper.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <tinyalsa/asoundlib.h>
 #include <policy.h>
@@ -186,7 +186,7 @@ void AudioStreamRoute::updateStreamRouteConfig(const StreamRouteConfig &config)
 
 android::status_t AudioStreamRoute::route(bool isPreEnable)
 {
-    AUDIOCOMMS_ASSERT(mAudioDevice != nullptr, "No valid device attached");
+    AUDIOUTILITIES_ASSERT(mAudioDevice != nullptr, "No valid device attached");
     if (isPreEnable == isPreEnableRequired()) {
 
         android::status_t err = mAudioDevice->open(getCardName(), getPcmDeviceId(),
@@ -222,7 +222,7 @@ android::status_t AudioStreamRoute::route(bool isPreEnable)
 
 void AudioStreamRoute::unroute(bool isPostDisable)
 {
-    AUDIOCOMMS_ASSERT(mAudioDevice != nullptr, "No valid device attached");
+    AUDIOUTILITIES_ASSERT(mAudioDevice != nullptr, "No valid device attached");
     if (!isPostDisable) {
 
         if (!mAudioDevice->isOpened()) {

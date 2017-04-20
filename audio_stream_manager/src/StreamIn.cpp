@@ -16,7 +16,7 @@
 #define LOG_TAG "AudioStreamIn"
 
 #include "StreamIn.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <HalAudioDump.hpp>
 #include <KeyValuePairs.hpp>
 #include <BitField.hpp>
@@ -226,7 +226,7 @@ status_t StreamIn::processFrames(void *buffer, ssize_t frames, ssize_t *processe
         }
         /* OK, we have to process all read frames */
         mProcessingFramesIn += read_frames;
-        AUDIOCOMMS_ASSERT(mProcessingFramesIn >= frames, "Not enough frames");
+        AUDIOUTILITIES_ASSERT(mProcessingFramesIn >= frames, "Not enough frames");
 
     }
 
@@ -255,7 +255,7 @@ status_t StreamIn::processFrames(void *buffer, ssize_t frames, ssize_t *processe
         // HW read frames, so it is necessary to realign the buffer
         if (processingFramesIn != 0) {
 
-            AUDIOCOMMS_ASSERT(processingFramesIn > 0, "Not enough frames");
+            AUDIOUTILITIES_ASSERT(processingFramesIn > 0, "Not enough frames");
             memmove(mProcessingBuffer,
                     (char *)mProcessingBuffer +
                     streamSampleSpec().convertFramesToBytes(mProcessingFramesIn -
@@ -418,7 +418,7 @@ status_t StreamIn::setDevice(audio_devices_t device)
 void StreamIn::setInputSource(audio_source_t inputSource)
 {
     static const uint32_t nbHiddenInputSource = 2; // Hotword and FmTuner are hidden by audio.h
-    AUDIOCOMMS_COMPILE_TIME_ASSERT(AUDIO_SOURCE_CNT + nbHiddenInputSource <= 32);
+    AUDIOUTILITIES_COMPILE_TIME_ASSERT(AUDIO_SOURCE_CNT + nbHiddenInputSource <= 32);
 
     uint32_t inputSourceShift = inputSource;
 
@@ -741,7 +741,7 @@ status_t StreamIn::setPreprocessorParam(effect_handle_t effect, effect_param_t &
     }
     status_t ret;
     uint32_t size = sizeof(int);
-    AUDIOCOMMS_ASSERT(param.psize >= 1, "Invalid parameter size");
+    AUDIOUTILITIES_ASSERT(param.psize >= 1, "Invalid parameter size");
     uint32_t psize = ((param.psize - 1) / sizeof(int) + 1) * sizeof(int) + param.vsize;
 
     ret = (*effect)->command(effect,

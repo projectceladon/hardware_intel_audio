@@ -71,7 +71,7 @@ component_static_lib := \
     libproperty \
     liblpepreprocessinghelper \
     libevent-listener_static \
-    libaudiocomms_naive_tokenizer
+    libaudioutilities_naive_tokenizer
 
 component_static_lib_host := \
     $(foreach lib, $(component_static_lib), $(lib)_host) \

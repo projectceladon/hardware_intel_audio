@@ -17,10 +17,10 @@
 
 #include "AudioUtils.hpp"
 #include "SampleSpec.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <cerrno>
 #include <convert.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ namespace intel_audio
 
 uint32_t AudioUtils::alignOn16(uint32_t u)
 {
-    AUDIOCOMMS_ASSERT((u / mFrameAlignementOn16) <=
+    AUDIOUTILITIES_ASSERT((u / mFrameAlignementOn16) <=
                       (numeric_limits<uint32_t>::max() / mFrameAlignementOn16),
                       "value to align exceeding limit");
     return (u + (mFrameAlignementOn16 - 1)) & ~(mFrameAlignementOn16 - 1);
@@ -56,13 +56,13 @@ size_t AudioUtils::convertSrcToDstInFrames(size_t frames,
                                            const SampleSpec &ssSrc,
                                            const SampleSpec &ssDst)
 {
-    AUDIOCOMMS_ASSERT(ssSrc.getSampleRate() != 0, "Source Sample Rate not set");
-    AUDIOCOMMS_ASSERT(ssDst.getSampleRate() != 0, "Destination Sample Rate not set");
-    AUDIOCOMMS_ASSERT(frames < (numeric_limits<uint64_t>::max() / ssDst.getSampleRate()),
+    AUDIOUTILITIES_ASSERT(ssSrc.getSampleRate() != 0, "Source Sample Rate not set");
+    AUDIOUTILITIES_ASSERT(ssDst.getSampleRate() != 0, "Destination Sample Rate not set");
+    AUDIOUTILITIES_ASSERT(frames < (numeric_limits<uint64_t>::max() / ssDst.getSampleRate()),
                       "Overflow detected");
     int64_t dstFrames = ((uint64_t)frames * ssDst.getSampleRate() + ssSrc.getSampleRate() - 1) /
                         ssSrc.getSampleRate();
-    AUDIOCOMMS_ASSERT(dstFrames <= numeric_limits<ssize_t>::max(),
+    AUDIOUTILITIES_ASSERT(dstFrames <= numeric_limits<ssize_t>::max(),
                       "conversion exceeding limit");
     return dstFrames;
 }

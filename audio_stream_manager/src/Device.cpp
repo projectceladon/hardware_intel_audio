@@ -20,7 +20,7 @@
 #include "StreamIn.hpp"
 #include "StreamOut.hpp"
 #include "CompressedStreamOut.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <hardware/audio.h>
 #include <Parameters.hpp>
 #include <RouteManagerInstance.hpp>
@@ -376,20 +376,20 @@ bool Device::getStream(const audio_io_handle_t &streamHandle, Stream * &stream)
 
 Port &Device::getPort(const audio_port_handle_t &portHandle)
 {
-    AUDIOCOMMS_ASSERT(hasPort(portHandle), "Port not found within collection");
+    AUDIOUTILITIES_ASSERT(hasPort(portHandle), "Port not found within collection");
     return mPorts[portHandle];
 }
 
 const Patch &Device::getPatchUnsafe(const audio_patch_handle_t &patchHandle) const
 {
     PatchCollection::const_iterator it = mPatches.find(patchHandle);
-    AUDIOCOMMS_ASSERT(it != mPatches.end(), "Patch not found within collection");
+    AUDIOUTILITIES_ASSERT(it != mPatches.end(), "Patch not found within collection");
     return it->second;
 }
 
 Patch &Device::getPatchUnsafe(const audio_patch_handle_t &patchHandle)
 {
-    AUDIOCOMMS_ASSERT(hasPatchUnsafe(patchHandle), "Patch not found within collection");
+    AUDIOUTILITIES_ASSERT(hasPatchUnsafe(patchHandle), "Patch not found within collection");
     return mPatches[patchHandle];
 }
 
@@ -447,7 +447,7 @@ void Device::onPortReleased(const audio_patch_handle_t &patchHandle,
         Log::Error() << __FUNCTION__ << ": Mix Port IO handle does not match any stream).";
         return;
     }
-    AUDIOCOMMS_ASSERT(stream->getPatchHandle() == patchHandle,
+    AUDIOUTILITIES_ASSERT(stream->getPatchHandle() == patchHandle,
                       "Mismatch between stream and patch handle");
     stream->setPatchHandle(AUDIO_PATCH_HANDLE_NONE); // Do not reset the device
 }
@@ -537,7 +537,7 @@ uint32_t Device::selectOutputDevices(uint32_t streamDeviceMask)
 {
     uint32_t selectedDeviceMask = streamDeviceMask;
 
-    AUDIOCOMMS_ASSERT(mPrimaryOutput != NULL, "Primary HAL without primary output is impossible");
+    AUDIOUTILITIES_ASSERT(mPrimaryOutput != NULL, "Primary HAL without primary output is impossible");
     if (isInCall()) {
         // Take the device of the primary output if in call
         selectedDeviceMask = mPrimaryOutput->getDevices();
@@ -625,7 +625,7 @@ CAudioBand::Type Device::getBandFromActiveInput() const
     for (StreamCollection::const_iterator it = mStreams.begin(); it != mStreams.end(); ++it) {
         const Stream *stream = it->second;
         if (!stream->isOut() && stream->isStarted() && stream->isRoutedByPolicy()) {
-            AUDIOCOMMS_ASSERT(activeInput == NULL, "More than one input is active");
+            AUDIOUTILITIES_ASSERT(activeInput == NULL, "More than one input is active");
             activeInput = stream;
         }
     }

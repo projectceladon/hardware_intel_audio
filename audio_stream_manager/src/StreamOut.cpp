@@ -17,7 +17,7 @@
 #define LOG_TAG "AudioStreamOut"
 
 #include "StreamOut.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <HalAudioDump.hpp>
 #include <utilities/Log.hpp>
 
@@ -145,7 +145,7 @@ status_t StreamOut::write(const void *buffer, size_t &bytes)
             mParent->printPlatformFwErrorInfo();
 
         }
-        AUDIOCOMMS_ASSERT(error.find(strerror(EBADF)) == std::string::npos,
+        AUDIOUTILITIES_ASSERT(error.find(strerror(EBADF)) == std::string::npos,
                           "Audio Device handle closed not by Audio HAL."
                           " A corruption might have happenned, investigation required");
         mStreamLock.unlock();

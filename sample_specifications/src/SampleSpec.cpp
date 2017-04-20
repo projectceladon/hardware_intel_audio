@@ -16,7 +16,7 @@
 #define LOG_TAG "SampleSpec"
 
 #include "SampleSpec.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <stdint.h>
 #include <errno.h>
@@ -29,7 +29,7 @@ namespace intel_audio
 {
 
 #define SAMPLE_SPEC_ITEM_IS_VALID(sampleSpecItem)                                    \
-    AUDIOCOMMS_ASSERT((sampleSpecItem) >= 0 && (sampleSpecItem) < NbSampleSpecItems, \
+    AUDIOUTILITIES_ASSERT((sampleSpecItem) >= 0 && (sampleSpecItem) < NbSampleSpecItems, \
                       "Invalid Sample Specifications")
 
 SampleSpec::SampleSpec(uint32_t channel,
@@ -53,7 +53,7 @@ void SampleSpec::setSampleSpecItem(SampleSpecItem sampleSpecItem, uint32_t value
 
     if (sampleSpecItem == ChannelCountSampleSpecItem) {
 
-        AUDIOCOMMS_ASSERT(value < mMaxChannels, "Max channel number reached");
+        AUDIOUTILITIES_ASSERT(value < mMaxChannels, "Max channel number reached");
 
         mChannelsPolicy.clear();
         // Reset all the channels policy to copy by default
@@ -76,7 +76,7 @@ void SampleSpec::setChannelsPolicy(const vector<ChannelsPolicy> &channelsPolicy)
 
 SampleSpec::ChannelsPolicy SampleSpec::getChannelsPolicy(uint32_t channelIndex) const
 {
-    AUDIOCOMMS_ASSERT(channelIndex < mChannelsPolicy.size(),
+    AUDIOUTILITIES_ASSERT(channelIndex < mChannelsPolicy.size(),
                       "request of channel policy outside channel numbers");
     return mChannelsPolicy[channelIndex];
 }
@@ -107,7 +107,7 @@ size_t SampleSpec::convertFramesToBytes(size_t frames) const
         Log::Error() << __FUNCTION__ << ": Null frame size";
         return 0;
     }
-    AUDIOCOMMS_ASSERT(frames <= numeric_limits<size_t>::max() / getFrameSize(),
+    AUDIOUTILITIES_ASSERT(frames <= numeric_limits<size_t>::max() / getFrameSize(),
                       "conversion exceeds limit");
     return frames * getFrameSize();
 }
@@ -118,7 +118,7 @@ size_t SampleSpec::convertFramesToUsec(uint32_t frames) const
         Log::Error() << __FUNCTION__ << ": Null sample rate";
         return 0;
     }
-    AUDIOCOMMS_ASSERT((static_cast<uint64_t>(frames) / getSampleRate()) <=
+    AUDIOUTILITIES_ASSERT((static_cast<uint64_t>(frames) / getSampleRate()) <=
                       (numeric_limits<size_t>::max() / mUsecPerSec),
                       "conversion exceeds limit");
     return (mUsecPerSec * static_cast<uint64_t>(frames)) / getSampleRate();

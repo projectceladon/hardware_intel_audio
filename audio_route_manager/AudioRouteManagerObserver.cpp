@@ -15,29 +15,29 @@
  */
 
 #include "AudioRouteManagerObserver.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 
 namespace intel_audio
 {
 
 AudioRouteManagerObserver::AudioRouteManagerObserver()
 {
-    AUDIOCOMMS_ASSERT(sem_init(&mSyncSem, 0, 0) == 0, "failed to create semaphore");
+    AUDIOUTILITIES_ASSERT(sem_init(&mSyncSem, 0, 0) == 0, "failed to create semaphore");
 }
 
 AudioRouteManagerObserver::~AudioRouteManagerObserver()
 {
-    AUDIOCOMMS_ASSERT(sem_destroy(&mSyncSem) == 0, "failed to destroy semaphore");
+    AUDIOUTILITIES_ASSERT(sem_destroy(&mSyncSem) == 0, "failed to destroy semaphore");
 }
 
 void AudioRouteManagerObserver::waitNotification()
 {
-    AUDIOCOMMS_ASSERT(sem_wait(&mSyncSem) == 0, "failed to wait semaphore");
+    AUDIOUTILITIES_ASSERT(sem_wait(&mSyncSem) == 0, "failed to wait semaphore");
 }
 
 void AudioRouteManagerObserver::notify()
 {
-    AUDIOCOMMS_ASSERT(sem_post(&mSyncSem) == 0, "failed to post semaphore");
+    AUDIOUTILITIES_ASSERT(sem_post(&mSyncSem) == 0, "failed to post semaphore");
 }
 
 } // namespace intel_audio

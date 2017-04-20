@@ -17,7 +17,7 @@
 #define LOG_TAG "AudioPort"
 
 #include "Port.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using android::status_t;
@@ -38,14 +38,14 @@ Port::~Port()
 {
     // On port deletion, i.e. ref count is 0, remove the associated device from the
     // routed devices.
-    AUDIOCOMMS_ASSERT(!isUsed(), "Removing still used port is not allowed, please analyse");
+    AUDIOUTILITIES_ASSERT(!isUsed(), "Removing still used port is not allowed, please analyse");
 }
 
 void Port::updateConfig(const audio_port_config &config)
 {
     if (getHandle() != AUDIO_PORT_HANDLE_NONE) {
         // We are dealing with an existing port
-        AUDIOCOMMS_ASSERT(getHandle() == config.id, "trying to overwrite port Id");
+        AUDIOUTILITIES_ASSERT(getHandle() == config.id, "trying to overwrite port Id");
 
         if (getType() == AUDIO_PORT_TYPE_MIX && getMixIoHandle() != config.ext.mix.handle) {
             Log::Warning() << __FUNCTION__ << ": Changing mix port (Id= " << config.id << ") handle"

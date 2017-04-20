@@ -181,7 +181,7 @@ void AudioRouteManager::reconsiderRoutingUnsafe(bool isSynchronous)
         return;
     }
 
-    AUDIOCOMMS_ASSERT(!mEventThread->inThreadContext(), "Failure: not in correct thread context!");
+    AUDIOUTILITIES_ASSERT(!mEventThread->inThreadContext(), "Failure: not in correct thread context!");
 
     if (!isSynchronous) {
         // Trigs the processing of the list

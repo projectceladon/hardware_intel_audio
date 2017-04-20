@@ -30,7 +30,7 @@
 #include <SampleSpec.hpp>
 #include <AudioNonCopyable.hpp>
 #include <Mutex.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <string>
 
 struct echo_reference_itfe;
@@ -153,7 +153,7 @@ protected:
      */
     IStreamInterface &getStreamInterface()
     {
-        AUDIOCOMMS_ASSERT(mStreamInterface != NULL, "Invalid stream interface");
+        AUDIOUTILITIES_ASSERT(mStreamInterface != NULL, "Invalid stream interface");
         return *mStreamInterface;
     }
 

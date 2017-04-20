@@ -23,7 +23,7 @@
 #include "Criterion.hpp"
 #include <RouteManagerInstance.hpp>
 #include <RouteInterface.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 
 using intel_audio::IRouteInterface;
 
@@ -50,7 +50,7 @@ RouteSubsystem::RouteSubsystem(const std::string &name, core::log::Logger &logge
       mRouteInterface(NULL)
 {
     mRouteInterface = intel_audio::RouteManagerInstance::getRouteInterface();
-    AUDIOCOMMS_ASSERT(mRouteInterface != NULL,
+    AUDIOUTILITIES_ASSERT(mRouteInterface != NULL,
                       "Could not retrieve route interface, plugin not functional");
 
     // Provide mapping keys to upper layer

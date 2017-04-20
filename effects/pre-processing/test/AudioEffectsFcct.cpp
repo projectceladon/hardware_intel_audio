@@ -68,8 +68,8 @@ bool AudioEffectsFunctionalTest::checkPlatformHasEffectType(const effect_uuid_t 
 void AudioEffectsFunctionalTest::compareEffectParams(const effect_param_t *param1,
                                                      const effect_param_t *param2)
 {
-    AUDIOCOMMS_ASSERT(param1->psize != 0, "effect param size 1 is 0");
-    AUDIOCOMMS_ASSERT(param2->psize != 0, "effect param size 2 is 0");
+    AUDIOUTILITIES_ASSERT(param1->psize != 0, "effect param size 1 is 0");
+    AUDIOUTILITIES_ASSERT(param2->psize != 0, "effect param size 2 is 0");
 
     EXPECT_EQ(0, memcmp(param1->data, param2->data, param1->psize))
         << "Effects parameters differ";
@@ -91,7 +91,7 @@ void AudioEffectsFunctionalTest::getParameterForEffect(AudioEffect *effect,
      * Get a copy of effect parameter structure
      */
     effect_param_t *effectParamCopy = (effect_param_t *)malloc(effectTest->getSize());
-    AUDIOCOMMS_ASSERT(effectParamCopy != NULL, "NULL effect param");
+    AUDIOUTILITIES_ASSERT(effectParamCopy != NULL, "NULL effect param");
     memcpy(effectParamCopy, effectTest->getEffectParam(), effectTest->getSize());
 
     status_t status;
@@ -125,7 +125,7 @@ void AudioEffectsFunctionalTest::setParameterForEffect(AudioEffect *effect,
      * Get a copy of effect parameter structure
      */
     effect_param_t *effectParamCopy = (effect_param_t *)malloc(effectTest->getSize());
-    AUDIOCOMMS_ASSERT(effectParamCopy != NULL, "NULL effect param");
+    AUDIOUTILITIES_ASSERT(effectParamCopy != NULL, "NULL effect param");
     memcpy(effectParamCopy, effectTest->getEffectParam(), effectTest->getSize());
 
     status_t status;

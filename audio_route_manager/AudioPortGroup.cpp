@@ -17,7 +17,7 @@
 
 #include "AudioPortGroup.hpp"
 #include "AudioPort.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 
 using std::string;

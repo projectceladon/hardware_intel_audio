@@ -192,7 +192,7 @@ template <class Trait>
 void Pfw<Trait>::addCriterionTypeValuePair(const string &typeName, uint32_t numericValue,
                                            const string &literalValue)
 {
-    AUDIOCOMMS_ASSERT(collectionHasElement<CriterionType *>(typeName, mCriterionTypes),
+    AUDIOUTILITIES_ASSERT(collectionHasElement<CriterionType *>(typeName, mCriterionTypes),
                       "CriterionType " << typeName.c_str() << " not found");
     CriterionType *criterionType = mCriterionTypes[typeName];
     if (criterionType->hasValuePairByName(literalValue)) {
@@ -227,7 +227,7 @@ void Pfw<Trait>::loadCriterionType(cnode &root, bool isInclusive)
 
                     char *first = strtok(valueName, ":");
                     char *second = strtok(NULL, ":");
-                    AUDIOCOMMS_ASSERT((first != NULL) && (strlen(first) != 0) &&
+                    AUDIOUTILITIES_ASSERT((first != NULL) && (strlen(first) != 0) &&
                                       (second != NULL) && (strlen(second) != 0),
                                       "invalid value pair");
 
@@ -392,7 +392,7 @@ void Pfw<Trait>::loadRogueParameterType(cnode &root, std::vector<Parameter *> &p
 
     parseChildren(root, rogueParameterPath, defaultValue, paramKeyName, typeName, valuePairs);
 
-    AUDIOCOMMS_ASSERT(!paramKeyName.empty(), "Rogue Parameter " << rogueParameterName <<
+    AUDIOUTILITIES_ASSERT(!paramKeyName.empty(), "Rogue Parameter " << rogueParameterName <<
                       " not associated to any Android parameter");
 
     addRogueParameter(typeName, paramKeyName, rogueParameterPath, defaultValue, valuePairs,
@@ -426,7 +426,7 @@ template <typename T>
 T *Pfw<Trait>::getElement(const string &name, std::map<string, T *> &elementsMap)
 {
     typename std::map<string, T *>::iterator it = elementsMap.find(name);
-    AUDIOCOMMS_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
+    AUDIOUTILITIES_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
     return it->second;
 }
 
@@ -435,7 +435,7 @@ template <typename T>
 const T *Pfw<Trait>::getElement(const string &name, const std::map<string, T *> &elementsMap) const
 {
     typename std::map<string, T *>::const_iterator it = elementsMap.find(name);
-    AUDIOCOMMS_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
+    AUDIOUTILITIES_ASSERT(it != elementsMap.end(), "Element " << name << " not found");
     return it->second;
 }
 
@@ -456,7 +456,7 @@ void Pfw<Trait>::loadCriteria(cnode &root, std::vector<Parameter *> &parameterVe
 template <class Trait>
 std::vector<AndroidParamMappingValuePair> Pfw<Trait>::parseMappingTable(const char *values)
 {
-    AUDIOCOMMS_ASSERT(values != NULL, "error in parsing file");
+    AUDIOUTILITIES_ASSERT(values != NULL, "error in parsing file");
     char *mappingPairs = strndup(values, strlen(values));
     char *ctx;
     std::vector<AndroidParamMappingValuePair> valuePairs;
@@ -467,7 +467,7 @@ std::vector<AndroidParamMappingValuePair> Pfw<Trait>::parseMappingTable(const ch
 
             char *first = strtok(mappingPair, ":");
             char *second = strtok(NULL, ":");
-            AUDIOCOMMS_ASSERT((first != NULL) && (strlen(first) != 0) &&
+            AUDIOUTILITIES_ASSERT((first != NULL) && (strlen(first) != 0) &&
                               (second != NULL) && (strlen(second) != 0),
                               "invalid value pair");
             AndroidParamMappingValuePair pair = std::make_pair(first, second);
@@ -483,7 +483,7 @@ template <class Trait>
 void Pfw<Trait>::addCriterion(const string &name, const string &typeName,
                               const string &defaultValue)
 {
-    AUDIOCOMMS_ASSERT(!collectionHasElement<Criterion *>(name, mCriteria),
+    AUDIOUTILITIES_ASSERT(!collectionHasElement<Criterion *>(name, mCriteria),
                       "Criterion " << name << " already added for " << mTag << " PFW");
     if (collectionHasElement<CriterionType *>(gStateChangedCriterionType, mCriterionTypes) &&
         name != gStateChangedCriterion) {

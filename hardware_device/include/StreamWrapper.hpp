@@ -17,7 +17,7 @@
 #pragma once
 
 #include <StreamInterface.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <AudioNonCopyable.hpp>
 #include <hardware/audio.h>
 #include <utils/Errors.h>
@@ -66,7 +66,7 @@ public:
     static typename Trait::CppStream *release(const typename Trait::CStream *stream)
     {
         typedef typename StreamWrapper<Trait>::Glue Glue;
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         const Glue &glue = *reinterpret_cast<const Glue *>(stream);
         typename Trait::CppStream &cppStream = getCppStream(stream);
         delete glue.mWrapper;
@@ -124,16 +124,16 @@ protected:
 
     static typename Trait::CppStream &getCppStream(const typename Trait::CStream *stream)
     {
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         return getCppStream(&stream->common);
     }
 
     static typename Trait::CppStream &getCppStream(const audio_stream_t *stream)
     {
         typedef typename StreamWrapper<Trait>::Glue Glue;
-        AUDIOCOMMS_ASSERT(stream != NULL, "Invalid stream");
+        AUDIOUTILITIES_ASSERT(stream != NULL, "Invalid stream");
         const Glue &glue = *reinterpret_cast<const Glue *>(stream);
-        AUDIOCOMMS_ASSERT(glue.mCppStream != NULL,
+        AUDIOUTILITIES_ASSERT(glue.mCppStream != NULL,
                           "Inconsistent state: stream" << stream
                                                        << " is not null, but cpp stream is null");
         return *glue.mCppStream;

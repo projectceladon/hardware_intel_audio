@@ -17,7 +17,7 @@
 #pragma once
 
 #include <AudioNonCopyable.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <media/AudioEffect.h>
 #include <binder/IServiceManager.h>
@@ -101,7 +101,7 @@ public:
         free(mParam);
         mSize = size;
         mParam = reinterpret_cast<effect_param_t *>(malloc(mSize));
-        AUDIOCOMMS_ASSERT(mParam != NULL, "Could not allocate effect param object");
+        AUDIOUTILITIES_ASSERT(mParam != NULL, "Could not allocate effect param object");
         memcpy(mParam, param, mSize);
 
         audio_comms::utilities::Log::Verbose() << __FUNCTION__

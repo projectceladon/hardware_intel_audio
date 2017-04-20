@@ -16,7 +16,7 @@
 #define LOG_TAG "KeyValuePairs"
 
 #include "KeyValuePairs.hpp"
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <string.h>
 #include <stdlib.h>
 

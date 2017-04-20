@@ -16,7 +16,7 @@
 #include "FunctionalTestHost.hpp"
 #include <media/AudioParameter.h>
 #include <KeyValuePairs.hpp>
-#include <AudioCommsAssert.hpp>
+#include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <utils/Vector.h>
 
@@ -42,7 +42,7 @@ void AudioHalTest::SetUpTestCase()
     Log::Debug() << "*** SetUpTestCase";
 
     mDevice = new intel_audio::Device();
-    AUDIOCOMMS_ASSERT(mDevice != NULL, "Invalid Audio Device");
+    AUDIOUTILITIES_ASSERT(mDevice != NULL, "Invalid Audio Device");
 }
 
 void AudioHalTest::TearDownTestCase()
