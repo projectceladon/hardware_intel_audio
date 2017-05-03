@@ -80,7 +80,9 @@ component_static_lib_target += \
 
 component_shared_lib_common := \
     libparameter \
-    libaudioroutemanager
+    libaudioroutemanager \
+    libtypeconverter \
+    liblog
 
 component_shared_lib_target := \
     $(component_shared_lib_common) \
@@ -98,11 +100,10 @@ component_shared_lib_host := \
     libicuuc-host \
     liblog
 
-
 component_whole_static_lib := \
     libaudiohw_intel
 
-component_cflags := -Wall -Werror -Wextra
+component_cflags := $(HAL_COMMON_CFLAGS)
 
 #######################################################################
 # Phony package definition
@@ -114,9 +115,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_REQUIRED_MODULES := \
     audio.primary.$(TARGET_BOARD_PLATFORM) \
-    libroute-subsystem \
-    liblpepreprocessing \
-    route_criteria.conf
+    liblpepreprocessing
 
 include $(BUILD_PHONY_PACKAGE)
 
@@ -241,7 +240,7 @@ endif
 # Build for configuration file
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := route_criteria.conf
+LOCAL_MODULE := route_manager_configuration.xml
 LOCAL_MODULE_OWNER := intel
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_CLASS := ETC

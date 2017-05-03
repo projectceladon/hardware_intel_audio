@@ -211,13 +211,10 @@ uint32_t Stream::getLatencyMs() const
 void Stream::setUseCaseMask(uint32_t useCaseMask)
 {
     if (getUseCaseMask() == useCaseMask) {
-
         return;
     }
-    mStreamLock.writeLock();
+    AutoW lock(mStreamLock);
     mUseCaseMask = useCaseMask;
-    mStreamLock.unlock();
-    updateLatency();
 }
 
 void Stream::updateLatency()

@@ -16,22 +16,16 @@
 #define LOG_TAG "AudioIntelHal"
 
 #include "Device.hpp"
-#include "AudioConversion.hpp"
 #include "StreamIn.hpp"
 #include "StreamOut.hpp"
 #include "CompressedStreamOut.hpp"
-#include <AudioUtilitiesAssert.hpp>
+#include <typeconverter/TypeConverter.hpp>
+#include <AudioConversion.hpp>
 #include <hardware/audio.h>
 #include <Parameters.hpp>
-#include <RouteManagerInstance.hpp>
 #include <hardware/audio_effect.h>
 #include <utilities/Log.hpp>
 #include <string>
-
-/**
- * Introduce a primary flag for input as well to manage route applicability for stream symetrically.
- */
-static const audio_input_flags_t AUDIO_INPUT_FLAG_PRIMARY = static_cast<audio_input_flags_t>(0x10);
 
 using namespace std;
 using android::status_t;
@@ -43,31 +37,16 @@ namespace intel_audio
 
 Device::Device()
     : mEchoReference(NULL),
-      mStreamInterface(NULL),
+      mStreamInterface(new AudioRouteManager()),
       mPrimaryOutput(NULL)
 {
-    // Retrieve the Stream Interface
-    mStreamInterface = RouteManagerInstance::getStreamInterface();
-    if (mStreamInterface == NULL) {
-        Log::Error() << "Failed to get Stream Interface on RouteMgr";
-        return;
-    }
-    /// Start Routing service
-    if (mStreamInterface->startService() != android::OK) {
-        Log::Error() << __FUNCTION__ << ": Could not start Route Manager stream service";
-        // Reset interface pointer to give a chance for initCheck to catch any issue
-        // with the RouteMgr.
-        mStreamInterface = NULL;
-        return;
-    }
     mStreamInterface->reconsiderRouting(true);
-
     Log::Debug() << __FUNCTION__ << ": Route Manager Service successfully started";
 }
 
 Device::~Device()
 {
-    mStreamInterface->stopService();
+    delete mStreamInterface;
 }
 
 status_t Device::initCheck() const
@@ -94,7 +73,7 @@ android::status_t Device::openOutputStream(audio_io_handle_t handle,
                                            const std::string & address)
 {
     Log::Debug() << __FUNCTION__ << ": handle=" << handle << ", flags=" << std::hex
-                 << static_cast<uint32_t>(flags) << ", devices: 0x" << devices;
+                 << static_cast<uint32_t>(flags) << ", devices: 0x" << devices << ", @:" << address;
 
     if (!audio_is_output_devices(devices)) {
         Log::Error() << __FUNCTION__ << ": called with bad devices";
@@ -170,6 +149,7 @@ android::status_t Device::openInputStream(audio_io_handle_t handle,
                                           audio_source_t source)
 {
     Log::Debug() << __FUNCTION__ << ": handle=" << handle << ", devices: 0x" << std::hex << devices
+                 << ", @:" << address
                  << ", input source: 0x" << static_cast<uint32_t>(source)
                  << ", input flags: 0x" << static_cast<uint32_t>(flags);
     if (!audio_is_input_device(devices)) {
@@ -238,34 +218,15 @@ status_t Device::getMicMute(bool &muted) const
 
 size_t Device::getInputBufferSize(const struct audio_config &config) const
 {
-    switch (config.sample_rate) {
-    case 8000:
-    case 11025:
-    case 12000:
-    case 16000:
-    case 22050:
-    case 24000:
-    case 32000:
-    case 44100:
-    case 48000:
-        break;
-    default:
-        Log::Warning() << __FUNCTION__ << ": bad sampling rate: " << config.sample_rate;
+    SampleSpec spec(popcount(config.channel_mask), config.format, config.sample_rate);
+    StreamIn stream(const_cast<Device *>(this), AUDIO_IO_HANDLE_NONE, AUDIO_INPUT_FLAG_PRIMARY,
+                    AUDIO_SOURCE_MIC, static_cast<audio_devices_t>(AUDIO_DEVICE_IN_BUILTIN_MIC), {});
+    audio_config inputConfig = config;
+    if (stream.set(inputConfig) != android::OK) {
+        Log::Error() << __FUNCTION__ << ": config not supported";
         return 0;
     }
-    if (config.format != AUDIO_FORMAT_PCM_16_BIT) {
-        Log::Warning() << __FUNCTION__ << ": bad format: " << static_cast<int32_t>(config.format);
-        return 0;
-    }
-    uint32_t channelCount = popcount(config.channel_mask);
-
-    // multichannel capture is currently supported only for submix
-    if ((channelCount < 1) || (channelCount > 8)) {
-        Log::Warning() << __FUNCTION__ << ": bad channel count: " << channelCount;
-        return 0;
-    }
-    SampleSpec spec(channelCount, config.format, config.sample_rate);
-    return spec.convertFramesToBytes(spec.convertUsecToframes(mRecordingBufferTimeUsec));
+    return spec.convertFramesToBytes(spec.convertUsecToframes(mStreamInterface->getPeriodInUs(stream)));
 }
 
 status_t Device::setParameters(const string &keyValuePairs)
@@ -424,6 +385,7 @@ void Device::onPortAttached(const audio_patch_handle_t &patchHandle,
     if (portToAttach.getRole() == AUDIO_PORT_ROLE_SINK) {
         StreamIn *inputStream = static_cast<StreamIn *>(stream);
         inputStream->setInputSource(portToAttach.getMixUseCaseSource());
+        inputStream->updateLatency();
     }
 }
 
@@ -458,9 +420,7 @@ status_t Device::createAudioPatch(size_t sourcesCount,
                                   const struct audio_port_config sinks[],
                                   audio_patch_handle_t &handle)
 {
-    if (handle == AUDIO_PATCH_HANDLE_NONE) {
-        handle = Patch::nextUniqueHandle();
-    }
+    handle = Patch::nextUniqueHandle();
     mPatchCollectionLock.lock();
 
     std::pair<PatchCollection::iterator, bool> ret;

@@ -359,6 +359,10 @@ public:
         return mDeviceAddress;
     }
 
+    bool needReconfigure() const { return mNeedReconfigure; }
+    void setNeedReconfigure();
+    void resetNeedReconfigure() { mNeedReconfigure = false; }
+
 protected:
     /**
      * Attach the stream to its route.
@@ -413,6 +417,8 @@ private:
 
     audio_devices_t mDevices = AUDIO_DEVICE_NONE; /**< devices assgined by the policy.*/
     std::string mDeviceAddress;
+
+    bool mNeedReconfigure = false;
 };
 
 } // namespace intel_audio

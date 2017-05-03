@@ -19,6 +19,21 @@
 ifeq ($(INTEL_AUDIO_HAL),audio_pfw)
 
 LOCAL_PATH := $(call my-dir)
+HAL_COMMON_CFLAGS :=
+
+USE_ALSA_LIB := 0
+ifeq ($(USE_ALSA_LIB), 1)
+HAL_COMMON_CFLAGS := $(HAL_COMMON_CFLAGS) -DUSE_ALSA_LIB
+endif
+
+HAVE_BOOST := 0
+ifeq ($(HAVE_BOOST), 1)
+HAL_COMMON_CFLAGS := $(HAL_COMMON_CFLAGS) -DHAVE_BOOST
+endif
+
+HAL_COMMON_CFLAGS := $(HAL_COMMON_CFLAGS) \
+    -Wall -Werror -Wextra -Wno-unused-parameter -Wno-unused-function
+
 include $(OPTIONAL_QUALITY_ENV_SETUP)
 
 define named-subdir-makefiles
@@ -28,6 +43,7 @@ endef
 SUBDIRS := audio_conversion \
            audio_dump_lib \
            audio_policy \
+           utilities/typeconverter \
            audio_route_manager \
            audio_stream_manager \
            effects \
@@ -39,7 +55,6 @@ SUBDIRS := audio_conversion \
            utilities/active_value_set \
            utilities/parameter \
            utilities \
-           audio_route_manager/parameter_framework_plugin \
            uevent_emulation
 
 # Call sub-folders' Android.mk

@@ -17,7 +17,6 @@
 
 #include "Device.hpp"
 #include "Stream.hpp"
-#include <StreamInterface.hpp>
 #include <media/AudioBufferProvider.h>
 #include <vector>
 #include <list>

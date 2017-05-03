@@ -36,9 +36,9 @@ android::status_t TinyAlsaAudioDevice::open(const char *cardName,
     AUDIOUTILITIES_ASSERT(cardName != NULL, "Null card name");
 
     pcm_config config;
-    config.rate = routeConfig.rate;
-    config.channels = routeConfig.channels;
-    config.format = AudioUtils::convertHalToTinyFormat(routeConfig.format);
+    config.rate = routeConfig.getRate();
+    config.channels = routeConfig.getChannelCount();
+    config.format = AudioUtils::convertHalToTinyFormat(routeConfig.getFormat());
     config.period_size = routeConfig.periodSize;
     config.period_count = routeConfig.periodCount;
     config.start_threshold = routeConfig.startThreshold;

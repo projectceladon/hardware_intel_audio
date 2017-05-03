@@ -20,7 +20,6 @@
 #include <AudioUtilitiesAssert.hpp>
 #include <cerrno>
 #include <convert.hpp>
-#include <AudioUtilitiesAssert.hpp>
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>

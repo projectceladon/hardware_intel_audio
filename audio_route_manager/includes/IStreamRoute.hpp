@@ -27,6 +27,8 @@ class IAudioDevice;
 class IStreamRoute
 {
 public:
+    IStreamRoute(const std::string &name, bool isOut) : mName(name), mIsOut(isOut) {}
+
     /**
      * Get the sample specifications of the stream route.
      *
@@ -47,6 +49,28 @@ public:
     virtual IAudioDevice *getAudioDevice() = 0;
 
     virtual ~IStreamRoute() {}
+
+    /**
+     * Gets the direction of the route.
+     *
+     * @return true if the route an output route, false if input route.
+     */
+    bool isOut() const
+    {
+        return mIsOut;
+    }
+
+    /**
+     * Returns identifier of current routing element
+     *
+     * @returns string representing the name of the routing element
+     */
+    const std::string &getName() const { return mName; }
+
+private:
+    std::string mName;
+
+    bool mIsOut; /**< Tells whether the route is an output or not. */
 };
 
 } // namespace intel_audio

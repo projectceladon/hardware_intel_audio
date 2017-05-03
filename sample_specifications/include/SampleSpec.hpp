@@ -17,7 +17,6 @@
 
 
 #include <hardware/audio.h>
-#include <tinyalsa/asoundlib.h>
 #include <string.h>
 #include <vector>
 
@@ -100,7 +99,6 @@ public:
     // Specific Accessors
     void setChannelCount(uint32_t channelCount)
     {
-
         setSampleSpecItem(ChannelCountSampleSpecItem, channelCount);
     }
     uint32_t getChannelCount() const
@@ -109,7 +107,6 @@ public:
     }
     void setSampleRate(uint32_t sampleRate)
     {
-
         setSampleSpecItem(RateSampleSpecItem, sampleRate);
     }
     uint32_t getSampleRate() const

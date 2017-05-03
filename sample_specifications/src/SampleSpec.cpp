@@ -41,7 +41,7 @@ SampleSpec::SampleSpec(uint32_t channel,
     setSampleSpecItem(ChannelCountSampleSpecItem, channel);
     setSampleSpecItem(FormatSampleSpecItem, format);
     setSampleSpecItem(RateSampleSpecItem, rate);
-    if (!channelsPolicy.empty()) {
+    if (not channelsPolicy.empty()) {
         setChannelsPolicy(channelsPolicy);
     }
 }
@@ -55,12 +55,9 @@ void SampleSpec::setSampleSpecItem(SampleSpecItem sampleSpecItem, uint32_t value
 
         AUDIOUTILITIES_ASSERT(value < mMaxChannels, "Max channel number reached");
 
-        mChannelsPolicy.clear();
         // Reset all the channels policy to copy by default
-        for (uint32_t i = 0; i < value; i++) {
-
-            mChannelsPolicy.push_back(Copy);
-        }
+        mChannelsPolicy.clear();
+        mChannelsPolicy = std::vector<ChannelsPolicy>(value, Copy);
     }
     mSampleSpec[sampleSpecItem] = value;
 }

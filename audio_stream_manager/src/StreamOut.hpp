@@ -17,7 +17,6 @@
 
 #include "Stream.hpp"
 #include "Device.hpp"
-#include <StreamInterface.hpp>
 
 struct echo_reference_itfe;
 
