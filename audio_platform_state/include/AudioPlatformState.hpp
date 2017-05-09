@@ -30,7 +30,7 @@ struct cnode;
 class ParameterMgrHelper;
 class CParameterHandle;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class ParameterMgrPlatformConnectorLogger;
@@ -322,4 +322,4 @@ private:
     mutable android::RWLock mPfwLock;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

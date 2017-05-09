@@ -30,7 +30,7 @@
 using namespace std;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 static uint32_t count[Direction::gNbDirections] = {
@@ -332,4 +332,4 @@ android::status_t AudioStreamRoute::dump(const int fd, int spaces) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

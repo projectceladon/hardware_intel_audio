@@ -21,7 +21,7 @@
 #include <typeconverter/TypeConverter.hpp>
 #include <utils/String8.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 bool AudioCapability::supportRate(uint32_t rate) const
@@ -154,4 +154,4 @@ const std::string AudioCapabilities::getSupportedRates() const
     return supportedRates;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

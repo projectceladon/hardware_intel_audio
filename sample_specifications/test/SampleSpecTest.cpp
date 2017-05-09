@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 Intel Corporation
+ * Copyright (C) 2012-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
 using ::testing::Test;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 TEST(SampleSpec, setGet)
@@ -363,4 +363,4 @@ TEST(SampleSpec, convertUsecToframes)
     EXPECT_EQ(44000 * 1 / 1000000u, sampleSpec.convertUsecToframes(1));
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

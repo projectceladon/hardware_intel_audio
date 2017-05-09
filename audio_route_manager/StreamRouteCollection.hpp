@@ -24,7 +24,7 @@
 #include <map>
 #include <utils/String8.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class StreamRouteCollection : public std::map<std::string, AudioStreamRoute *>
@@ -471,4 +471,4 @@ private:
     } mRoutes[Direction::gNbDirections];
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

@@ -28,7 +28,7 @@ using android::status_t;
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 Patch::Patch(const audio_patch_handle_t handle, PatchInterface *patchInterface)
@@ -158,4 +158,4 @@ android::status_t Patch::dump(const int fd, int spaces) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

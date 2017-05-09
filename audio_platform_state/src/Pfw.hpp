@@ -28,7 +28,7 @@ struct cnode;
 class ParameterMgrHelper;
 class CParameterHandle;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 enum pfwtype
@@ -129,4 +129,4 @@ private:
     const std::string mTag;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

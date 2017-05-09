@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #include <DeviceInterface.hpp>
 #include <StreamMock.hpp>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class DeviceMock : public DeviceInterface
@@ -120,4 +120,4 @@ public:
     { return android::OK; }
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

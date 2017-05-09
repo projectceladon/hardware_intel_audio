@@ -27,7 +27,7 @@ using namespace android;
 using namespace std;
 using audio_utilities::utilities::Log;
 
-intel_audio::Device *AudioHalTest::mDevice = NULL;
+audio_hal::Device *AudioHalTest::mDevice = NULL;
 
 void AudioHalTest::setConfig(uint32_t rate, audio_channel_mask_t mask, audio_format_t format,
                              audio_config_t &config)
@@ -41,7 +41,7 @@ void AudioHalTest::SetUpTestCase()
 {
     Log::Debug() << "*** SetUpTestCase";
 
-    mDevice = new intel_audio::Device();
+    mDevice = new audio_hal::Device();
     AUDIOUTILITIES_ASSERT(mDevice != NULL, "Invalid Audio Device");
 }
 
@@ -168,7 +168,7 @@ TEST_P(AudioHalInputStreamSupportedInputSourceTest, inputSource)
 {
     audio_config_t config;
     setConfig(48000, AUDIO_CHANNEL_IN_STEREO, AUDIO_FORMAT_PCM_16_BIT, config);
-    intel_audio::StreamInInterface *inStream = NULL;
+    audio_hal::StreamInInterface *inStream = NULL;
     audio_devices_t devices = static_cast<audio_devices_t>(AUDIO_DEVICE_IN_COMMUNICATION);
     audio_input_flags_t flags = AUDIO_INPUT_FLAG_NONE;
     const char *address = "dont_care";
@@ -209,7 +209,7 @@ TEST_F(AudioHalTest, inputStreamSpec)
 
     audio_config_t config;
     setConfig(48000, AUDIO_CHANNEL_IN_STEREO, AUDIO_FORMAT_PCM_16_BIT, config);
-    intel_audio::StreamInInterface *inStream = NULL;
+    audio_hal::StreamInInterface *inStream = NULL;
     audio_devices_t devices = static_cast<audio_devices_t>(AUDIO_DEVICE_IN_COMMUNICATION);
     audio_input_flags_t flags = AUDIO_INPUT_FLAG_NONE;
     const char *address = "dont_care";
@@ -233,7 +233,7 @@ TEST_F(AudioHalTest, outputStreamSpec)
     audio_config_t config;
     setConfig(48000, AUDIO_CHANNEL_OUT_STEREO, AUDIO_FORMAT_PCM_16_BIT, config);
     audio_output_flags_t flags = AUDIO_OUTPUT_FLAG_PRIMARY;
-    intel_audio::StreamOutInterface *outStream = NULL;
+    audio_hal::StreamOutInterface *outStream = NULL;
     audio_devices_t devices = static_cast<uint32_t>(AUDIO_DEVICE_OUT_EARPIECE);
     const char *address = "dont_care";
 
@@ -271,7 +271,7 @@ TEST_P(AudioHalValidGlobalParameterTest, key)
     string key = GetParam().first;
     string value = GetParam().second;
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = getDevice()->getParameters(key.c_str());
 
     valuePair.add(key, value);
@@ -293,7 +293,7 @@ TEST_P(AudioHalInvalidGlobalParameterTest, key)
     string key = GetParam().first;
     string value = GetParam().second;
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = getDevice()->getParameters(key.c_str());
 
     valuePair.add(key, value);
@@ -309,9 +309,9 @@ INSTANTIATE_TEST_CASE_P(
         )
     );
 
-std::string getStreamParameter(intel_audio::StreamOutInterface *out, const std::string &key)
+std::string getStreamParameter(audio_hal::StreamOutInterface *out, const std::string &key)
 {
-    intel_audio::KeyValuePairs kvChannels(out->getParameters(key));
+    audio_hal::KeyValuePairs kvChannels(out->getParameters(key));
 
     EXPECT_TRUE(kvChannels.hasKey(key));
     std::string getValue;
@@ -325,7 +325,7 @@ TEST_F(AudioHalTest, hdmi)
     audio_config_t config;
     setConfig(48000, AUDIO_CHANNEL_OUT_STEREO, AUDIO_FORMAT_PCM_16_BIT, config);
     audio_output_flags_t flags = AUDIO_OUTPUT_FLAG_DIRECT;
-    intel_audio::StreamOutInterface *outStream = NULL;
+    audio_hal::StreamOutInterface *outStream = NULL;
     audio_devices_t devices = static_cast<uint32_t>(AUDIO_DEVICE_OUT_HDMI);
     const char *address = "dont_care";
 
@@ -340,7 +340,7 @@ TEST_F(AudioHalTest, hdmi)
 
     // Now connect the device to retrieve the dynamic settings of HDMI and try again to open.
     {
-        intel_audio::KeyValuePairs valuePair;
+        audio_hal::KeyValuePairs valuePair;
         valuePair.add(AUDIO_PARAMETER_DEVICE_CONNECT, AUDIO_DEVICE_OUT_HDMI);
         ASSERT_EQ(android::OK, getDevice()->setParameters(valuePair.toString().c_str()));
     }
@@ -366,7 +366,7 @@ TEST_F(AudioHalTest, hdmi)
 
     // Lets disconnect the device, the stream will be kept alive, and retrieve again the capabilities
     {
-        intel_audio::KeyValuePairs valuePair;
+        audio_hal::KeyValuePairs valuePair;
         valuePair.add(AUDIO_PARAMETER_DEVICE_DISCONNECT, AUDIO_DEVICE_OUT_HDMI);
         ASSERT_EQ(android::OK, getDevice()->setParameters(valuePair.toString().c_str()));
     }

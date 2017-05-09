@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 #include <vector>
 #include <list>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class StreamIn : public StreamInInterface, public Stream,
@@ -351,4 +351,4 @@ private:
 
     static const std::string mHwEffectImplementor; /**< Implementor name for HW effects. */
 };
-} // namespace intel_audio
+} // namespace audio_hal

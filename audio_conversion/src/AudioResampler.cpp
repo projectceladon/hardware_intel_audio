@@ -25,7 +25,7 @@
 using audio_utilities::utilities::Log;
 using namespace android;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 AudioResampler::AudioResampler(SampleSpecItem sampleSpecItem)
@@ -113,4 +113,4 @@ status_t AudioResampler::resampleFrames(const void *src,
 
     return status;
 }
-}  // namespace intel_audio
+}  // namespace audio_hal

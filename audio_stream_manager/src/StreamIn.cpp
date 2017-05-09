@@ -29,7 +29,7 @@ using audio_utilities::utilities::BitField;
 using android::status_t;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const std::string StreamIn::mHwEffectImplementor = "IntelLPE";
@@ -806,4 +806,4 @@ status_t StreamIn::allocateProcessingMemory(ssize_t frames)
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

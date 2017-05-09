@@ -25,7 +25,7 @@
 using audio_utilities::utilities::Log;
 using namespace android;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 static const std::vector<std::pair<audio_format_t, audio_format_t> > mSupportedConversions = {
@@ -169,4 +169,4 @@ status_t AudioReformatter::convertS32toS16(const void *src, void *dst, const siz
     *outFrames = inFrames;
     return NO_ERROR;
 }
-}  // namespace intel_audio
+}  // namespace audio_hal

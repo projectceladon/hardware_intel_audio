@@ -21,7 +21,7 @@
 #include <ParameterMgrHelper.hpp>
 #include <utilities/Log.hpp>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /**
@@ -120,4 +120,4 @@ private:
     CParameterMgrPlatformConnector *mParameterMgrConnector; /**< PFW connector. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

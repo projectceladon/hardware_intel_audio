@@ -20,7 +20,7 @@
 #include <utilities/Log.hpp>
 
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class AlsaAudioUtils
@@ -46,4 +46,4 @@ public:
      */
     static snd_pcm_format_t convertHalToAlsaFormat(audio_format_t format);
 };
-}  // namespace intel_audio
+}  // namespace audio_hal

@@ -32,7 +32,7 @@ using android::status_t;
 using audio_utilities::utilities::Log;
 using audio_utilities::utilities::Mutex;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 Device::Device()
@@ -633,4 +633,4 @@ android::status_t Device::dump(const int fd) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

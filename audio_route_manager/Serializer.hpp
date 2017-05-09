@@ -24,7 +24,7 @@
 struct _xmlNode;
 struct _xmlDoc;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 struct AudioCriterionTypeTraits
@@ -180,4 +180,4 @@ private:
     std::string mVersion;
 };
 
-}  // namespace intel_audio
+}  // namespace audio_hal

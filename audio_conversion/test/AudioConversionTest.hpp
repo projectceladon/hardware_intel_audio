@@ -24,7 +24,7 @@
 #include <gtest/gtest.h>
 #include <stdint.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class MyAudioBufferProvider
@@ -80,4 +80,4 @@ private:
 
 };
 
-}  // namespace intel_audio
+}  // namespace audio_hal

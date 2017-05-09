@@ -21,7 +21,7 @@
 
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const char *const VolumeKeys::mGpioKeysWakeupEnable =
@@ -69,4 +69,4 @@ int VolumeKeys::wakeup(bool isEnabled)
     return 0;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

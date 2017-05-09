@@ -26,7 +26,7 @@
 #include <AudioUtilitiesAssert.hpp>
 #include <assert.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /**
@@ -248,4 +248,4 @@ static std::vector<OutputChannelTraits::Type> outputChannelMasksFromString(const
     return outputChannelMaskCollection;
 }
 
-}  // namespace intel_audio
+}  // namespace audio_hal

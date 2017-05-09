@@ -19,7 +19,7 @@
 #include <utils/Errors.h>
 #include <vector>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 struct AudioCapability
@@ -121,4 +121,4 @@ struct AudioCapabilities : public std::vector<AudioCapability>
     }
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

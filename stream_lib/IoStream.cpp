@@ -26,7 +26,7 @@
 using audio_utilities::utilities::Log;
 using std::string;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 bool IoStream::isRouted() const
@@ -205,4 +205,4 @@ android::status_t IoStream::dump(const int fd, int spaces) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

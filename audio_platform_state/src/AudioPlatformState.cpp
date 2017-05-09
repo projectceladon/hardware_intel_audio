@@ -37,7 +37,7 @@ using audio_utilities::utilities::Property;
 
 static const std::string gAndroidModeCriterion = "AndroidMode";
 
-namespace intel_audio
+namespace audio_hal
 {
 
 template <>
@@ -236,4 +236,4 @@ void AudioPlatformState::printPlatformFwErrorInfo() const
     }
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

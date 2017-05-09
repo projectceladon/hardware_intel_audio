@@ -47,7 +47,7 @@ using audio_utilities::utilities::Property;
 using audio_utilities::utilities::Mutex;
 using audio_utilities::utilities::ConditionVariable;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 static const int gDefaultRampInMs = 5; // valid mixer range is from 5 to 5000
@@ -771,4 +771,4 @@ void CompressedStreamOut::setBufferSize()
     Log::Verbose() << __FUNCTION__ << ": bufSize=" << mBufferSize;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

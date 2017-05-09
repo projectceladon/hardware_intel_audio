@@ -28,7 +28,7 @@
 
 class CEventThread;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class IoStream;
@@ -294,4 +294,4 @@ private:
     bool mAudioSubsystemAvailable = true;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

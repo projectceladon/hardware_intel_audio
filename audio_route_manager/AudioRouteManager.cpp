@@ -67,7 +67,7 @@ static const std::string gEventType{"EVENT_TYPE"};
 static const std::string gRecoverUevent{gEventType + "=" + "SST_RECOVERY"};
 static const std::string gCrashUevent{gEventType + "=" + "SST_CRASHED"};
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const int AudioRouteManager::gUEventMsgMaxLeng = 1024;
@@ -583,4 +583,4 @@ android::status_t AudioRouteManager::dump(const int fd, int spaces) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

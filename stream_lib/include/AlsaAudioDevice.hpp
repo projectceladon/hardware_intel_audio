@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Intel Corporation
+ * Copyright (C) 2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #include "AudioDevice.hpp"
 #include <alsa/asoundlib.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 struct StreamRouteConfig;
@@ -57,4 +57,4 @@ private:
     snd_pcm_t *mPcmDevice; /**< Handle on alsa PCM device. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

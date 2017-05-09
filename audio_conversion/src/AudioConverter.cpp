@@ -25,7 +25,7 @@
 using audio_utilities::utilities::Log;
 using namespace android;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 AudioConverter::AudioConverter(SampleSpecItem sampleSpecItem)
@@ -155,4 +155,4 @@ size_t AudioConverter::convertSrcFromDstInFrames(ssize_t frames) const
 {
     return AudioUtils::convertSrcToDstInFrames(frames, mSsDst, mSsSrc);
 }
-}  // namespace intel_audio
+}  // namespace audio_hal

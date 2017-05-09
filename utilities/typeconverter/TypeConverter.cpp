@@ -16,7 +16,7 @@
 
 #include "TypeConverter.hpp"
 
-namespace intel_audio
+namespace audio_hal
 {
 
 template <>
@@ -334,4 +334,4 @@ template class TypeConverter<InputSourceTraits>;
 template class TypeConverter<DefaultTraits<audio_port_role_t> >;
 template class TypeConverter<DefaultTraits<audio_port_type_t>>;
 
-}  // namespace intel_audio
+}  // namespace audio_hal

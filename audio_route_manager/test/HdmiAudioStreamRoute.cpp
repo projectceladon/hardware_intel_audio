@@ -22,7 +22,7 @@ using android::status_t;
 using std::string;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 RegisterStreamRoute<HdmiAudioStreamRoute> HdmiAudioStreamRoute::reg("Hdmi");
@@ -48,4 +48,4 @@ void HdmiAudioStreamRoute::loadCapabilities()
     }
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

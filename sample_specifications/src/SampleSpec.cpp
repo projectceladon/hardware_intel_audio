@@ -27,7 +27,7 @@
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 #define SAMPLE_SPEC_ITEM_IS_VALID(sampleSpecItem)                                    \
@@ -161,4 +161,4 @@ android::status_t SampleSpec::dump(const int fd, bool isOut, int spaces) const
     return android::OK;
 }
 
-}  // namespace intel_audio
+}  // namespace audio_hal

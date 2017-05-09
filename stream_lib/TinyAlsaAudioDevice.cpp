@@ -24,7 +24,7 @@
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 android::status_t TinyAlsaAudioDevice::open(const char *cardName,
@@ -176,4 +176,4 @@ android::status_t TinyAlsaAudioDevice::pcmStop() const
     return pcm_stop(mPcmDevice);
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

@@ -19,7 +19,7 @@
 #include <SampleSpec.hpp>
 #include <string>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 struct StreamRouteConfig
@@ -105,4 +105,4 @@ struct StreamRouteConfig
     android::status_t dump(const int fd, int spaces) const;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

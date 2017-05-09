@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #include "Parameter.hpp"
 #include <Criterion.hpp>
 
-namespace intel_audio
+namespace audio_hal
 {
 /**
  * This class intends to address the Android Parameters that are associated to a criterion.
@@ -51,4 +51,4 @@ private:
     Criterion &mCriterion; /**< Associated Route PFW criterion to the android parameter. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

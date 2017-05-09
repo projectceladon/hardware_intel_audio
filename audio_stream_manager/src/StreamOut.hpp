@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 struct echo_reference_itfe;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class StreamOut : public StreamOutInterface, public Stream
@@ -146,4 +146,4 @@ private:
 
     bool mIsMuted;
 };
-} // namespace intel_audio
+} // namespace audio_hal

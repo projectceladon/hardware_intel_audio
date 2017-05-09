@@ -19,7 +19,7 @@
 #include <map>
 #include <string>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class StreamRouteFactory
@@ -64,4 +64,4 @@ struct RegisterStreamRoute
     }
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

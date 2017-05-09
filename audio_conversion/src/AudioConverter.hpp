@@ -23,7 +23,7 @@
 
 using audio_utilities::utilities::NonCopyable;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class AudioConverter : public NonCopyable
@@ -143,4 +143,4 @@ private:
 
     SampleSpecItem mSampleSpecItem; /**< Sample spec item on which the converter is working. */
 };
-}  // namespace intel_audio
+}  // namespace audio_hal

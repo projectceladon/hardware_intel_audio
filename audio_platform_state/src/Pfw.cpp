@@ -37,7 +37,7 @@ using audio_utilities::utilities::Log;
 using audio_utilities::utilities::Property;
 using audio_utilities::utilities::convertTo;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 template <>
@@ -250,4 +250,4 @@ CParameterHandle *Pfw<Trait>::getDynamicParameterHandle(const string &dynamicPar
 
 template class Pfw<PfwTrait<Audio> >;
 
-} // namespace intel_audio
+} // namespace audio_hal

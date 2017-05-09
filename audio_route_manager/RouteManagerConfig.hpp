@@ -23,7 +23,7 @@
 #include <CriterionParameter.hpp>
 #include <RogueParameter.hpp>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class RouteManagerConfig
@@ -65,4 +65,4 @@ public:
     CParameterMgrPlatformConnector *mConnector; /**< Parameter-Manager connector. */
 };
 
-}  // namespace intel_audio
+}  // namespace audio_hal

@@ -35,7 +35,7 @@
 
 struct echo_reference_itfe;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class CompressedStreamOut;
@@ -389,4 +389,4 @@ private:
     mutable audio_utilities::utilities::Mutex mPatchCollectionLock;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

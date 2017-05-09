@@ -20,7 +20,7 @@
 
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 audio_format_t AlsaAudioUtils::convertAlsaToHalFormat(snd_pcm_format_t format)
@@ -67,4 +67,4 @@ snd_pcm_format_t AlsaAudioUtils::convertHalToAlsaFormat(audio_format_t format)
     return convFormat;
 }
 
-}  // namespace intel_audio
+}  // namespace audio_hal

@@ -24,7 +24,7 @@
 #include <list>
 #include <utils/Errors.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class IAudioDevice;
@@ -388,4 +388,4 @@ private:
     IAudioDevice *mAudioDevice; /**< Platform dependant audio device. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

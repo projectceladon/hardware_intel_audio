@@ -43,7 +43,7 @@ static const std::string gSignedIntegerTypeTag = "int32_t";
 static const std::string gStringTypeTag = "string";
 static const std::string gDoubleTypeTag = "double";
 
-namespace intel_audio
+namespace audio_hal
 {
 
 typedef std::pair<std::string, std::string> AndroidParamMappingValuePair;
@@ -685,4 +685,4 @@ status_t RouteSerializer::deserialize(const char *configFile, RouteManagerConfig
     return android::OK;
 }
 
-}  // namespace intel_audio
+}  // namespace audio_hal

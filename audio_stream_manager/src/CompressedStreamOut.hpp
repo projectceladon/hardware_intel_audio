@@ -29,7 +29,7 @@ static const uint32_t CODEC_OFFLOAD_LATENCY = 10;      /* Default latency in mSe
 struct compress;
 struct compr_gapless_mdata;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class CompressedStreamOut : public StreamOut
@@ -269,4 +269,4 @@ private:
     } mCodec;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

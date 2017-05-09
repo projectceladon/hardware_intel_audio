@@ -20,7 +20,7 @@
 #include <map>
 #include <utils/Errors.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /**
@@ -157,4 +157,4 @@ private:
     static const char *const mPairAssociator; /**< key value Pair token. */
 };
 
-}   // namespace intel_audio
+}   // namespace audio_hal

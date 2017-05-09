@@ -27,7 +27,7 @@
 
 class HalAudioDump;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class Device;
@@ -341,4 +341,4 @@ private:
      */
     audio_patch_handle_t mPatchHandle;
 };
-} // namespace intel_audio
+} // namespace audio_hal

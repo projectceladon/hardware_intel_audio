@@ -20,7 +20,7 @@
 
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 CriterionParameter::CriterionParameter(const std::string &key,
@@ -57,4 +57,4 @@ bool CriterionParameter::sync()
     return mCriterion.setCriterionState(getDefaultLiteralValue());
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

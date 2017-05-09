@@ -26,7 +26,7 @@ using android::status_t;
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 Port::Port()
@@ -127,4 +127,4 @@ android::status_t Port::dump(const int fd, int spaces) const
     return android::OK;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

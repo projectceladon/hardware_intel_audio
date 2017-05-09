@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 #include <string.h>
 #include <vector>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 //
@@ -242,4 +242,4 @@ private:
     static const uint32_t mMaxChannels = 32; /**< supports until 32 channels. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

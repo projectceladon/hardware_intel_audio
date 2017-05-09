@@ -31,7 +31,7 @@ using audio_utilities::utilities::Log;
 using namespace android;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const uint32_t AudioConversion::mMaxRate = 92000;
@@ -368,4 +368,4 @@ status_t AudioConversion::configureAndAddConverter(SampleSpecItem sampleSpecItem
     }
     return NO_ERROR;
 }
-}  // namespace intel_audio
+}  // namespace audio_hal

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Intel Corporation
+ * Copyright (C) 2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 android::status_t AlsaAudioDevice::open(const char *deviceName, uint32_t /*deviceId*/,
@@ -331,4 +331,4 @@ android::status_t AlsaAudioDevice::pcmStop() const
     return err;
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

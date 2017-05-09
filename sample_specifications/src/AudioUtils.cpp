@@ -31,7 +31,7 @@ using namespace std;
 using audio_utilities::utilities::convertTo;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 uint32_t AudioUtils::alignOn16(uint32_t u)
@@ -201,4 +201,4 @@ uint32_t AudioUtils::convertUsecToMsec(uint32_t timeUsec)
     return (static_cast<uint64_t>(timeUsec) + mUsecPerMsec - 1) / mUsecPerMsec;
 }
 
-}  // namespace intel_audio
+}  // namespace audio_hal

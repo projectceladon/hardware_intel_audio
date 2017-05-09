@@ -34,7 +34,7 @@ using audio_utilities::utilities::Log;
 using audio_utilities::utilities::Property;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /**
@@ -376,4 +376,4 @@ android::status_t Stream::dump(int fd) const
     return IoStream::dump(fd, spaces + 2);
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

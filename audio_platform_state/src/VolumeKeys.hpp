@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 #pragma once
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class VolumeKeys
@@ -47,4 +47,4 @@ private:
     static const char *const mKeyVolumeUp;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal
