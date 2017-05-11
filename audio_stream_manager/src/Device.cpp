@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ static const audio_input_flags_t AUDIO_INPUT_FLAG_PRIMARY = static_cast<audio_in
 
 using namespace std;
 using android::status_t;
-using audio_comms::utilities::Log;
-using audio_comms::utilities::Mutex;
+using audio_utilities::utilities::Log;
+using audio_utilities::utilities::Mutex;
 
 namespace intel_audio
 {

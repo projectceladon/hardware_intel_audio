@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 
 class AudioEffectSession;
 
-class AudioEffect : private audio_comms::utilities::NonCopyable
+class AudioEffect : private audio_utilities::utilities::NonCopyable
 {
 public:
     AudioEffect(const struct effect_interface_s *itfe, const effect_descriptor_t *descriptor);

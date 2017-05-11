@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2014-2016
+# Copyright (C) Intel 2014-2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES := \
     src/StreamWrapper.cpp
 LOCAL_CFLAGS := -Wall -Werror -Wextra
-LOCAL_STATIC_LIBRARIES := libaudio_comms_utilities
+LOCAL_STATIC_LIBRARIES := libaudio_utilities
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_MODULE_TAGS := optional
@@ -47,7 +47,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES := \
     src/StreamWrapper.cpp
 LOCAL_CFLAGS := -Wall -Werror -Wextra -O0 -ggdb
-LOCAL_STATIC_LIBRARIES := libaudio_comms_utilities_host
+LOCAL_STATIC_LIBRARIES := libaudio_utilities_host
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_MODULE_TAGS := optional
@@ -69,7 +69,7 @@ LOCAL_SRC_FILES := \
     test/DeviceWrapperTest.cpp \
     test/StreamWrapperTest.cpp
 
-LOCAL_STATIC_LIBRARIES := libaudio_comms_utilities_host
+LOCAL_STATIC_LIBRARIES := libaudio_utilities_host
 
 LOCAL_STATIC_LIBRARIES += \
     libaudiohw_intel_host \

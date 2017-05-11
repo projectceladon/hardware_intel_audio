@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,7 +173,7 @@ struct AudioCapabilities
         std::string formattedRates;
         for (auto &rate : supportedRates) {
             std::string literalRate;
-            if (audio_comms::utilities::convertTo(rate, literalRate)) {
+            if (audio_utilities::utilities::convertTo(rate, literalRate)) {
                 formattedRates += literalRate;
             }
             if (&rate != &supportedRates.back()) {

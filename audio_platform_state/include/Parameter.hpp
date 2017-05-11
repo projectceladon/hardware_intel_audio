@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace intel_audio
  * or path (for a rogue parameter). This object will allow to wrap setter and getter on this
  * android-parameter to the associated element in the Parameter Manager.
  */
-class Parameter : private audio_comms::utilities::NonCopyable
+class Parameter : private audio_utilities::utilities::NonCopyable
 {
 public:
     enum Type

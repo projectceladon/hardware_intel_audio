@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-class TestEffectParameterBase : private audio_comms::utilities::NonCopyable
+class TestEffectParameterBase : private audio_utilities::utilities::NonCopyable
 {
 public:
     enum Direction
@@ -58,7 +58,7 @@ public:
      * parametrized test suite.
      */
     TestEffectParameterBase(const TestEffectParameterBase &object)
-        : audio_comms::utilities::NonCopyable(),
+        : audio_utilities::utilities::NonCopyable(),
           mEffectUuidType(object.mEffectUuidType),
           mParam(NULL),
           mSize(object.mSize),
@@ -104,7 +104,7 @@ public:
         AUDIOUTILITIES_ASSERT(mParam != NULL, "Could not allocate effect param object");
         memcpy(mParam, param, mSize);
 
-        audio_comms::utilities::Log::Verbose() << __FUNCTION__
+        audio_utilities::utilities::Log::Verbose() << __FUNCTION__
                                                << ": param=" << *(uint32_t *)mParam->data
                                                << " val=" << *((uint16_t *)mParam->data + 2)
                                                << " paramSize=" << mParam->psize
@@ -114,7 +114,7 @@ public:
             sizeof(mParam->vsize);
 
         for (size_t i = 0; i < mSize / 2; i++) {
-            audio_comms::utilities::Log::Verbose() << "setEffectParam: dump param struct = effect["
+            audio_utilities::utilities::Log::Verbose() << "setEffectParam: dump param struct = effect["
                                                    << i
                                                    << "=" << *((uint16_t *)mParam + i)
                                                    << " @=" << (mParam + i);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace intel_audio
 {
 
 template <class Device, int CDeviceApiVersion>
-class DeviceWrapper : private audio_comms::utilities::NonCopyable
+class DeviceWrapper : private audio_utilities::utilities::NonCopyable
 {
 public:
     static int open(const hw_module_t *module, const char *name, hw_device_t **device);

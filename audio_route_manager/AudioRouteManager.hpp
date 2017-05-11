@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ struct pcm_config;
 class AudioRouteManager : public IStreamInterface,
                           public IRouteInterface,
                           private IEventListener,
-                          private audio_comms::utilities::Observable,
-                          private audio_comms::utilities::NonCopyable
+                          private audio_utilities::utilities::Observable,
+                          private audio_utilities::utilities::NonCopyable
 {
 public:
     AudioRouteManager();

@@ -24,7 +24,7 @@ namespace intel_audio
 struct IRouteInterface;
 }
 
-class RouteSubsystem : public CSubsystem, private audio_comms::utilities::NonCopyable
+class RouteSubsystem : public CSubsystem, private audio_utilities::utilities::NonCopyable
 {
 public:
     RouteSubsystem(const std::string &strName, core::log::Logger &logger);

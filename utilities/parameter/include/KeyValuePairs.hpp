@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public:
     android::status_t add(const std::string &key, const T &value)
     {
         std::string literal;
-        if (!audio_comms::utilities::convertTo(value, literal)) {
+        if (!audio_utilities::utilities::convertTo(value, literal)) {
             return android::BAD_VALUE;
         }
         return addLiteral(key, literal);
@@ -114,7 +114,7 @@ public:
         if (status != android::OK) {
             return status;
         }
-        if (!audio_comms::utilities::convertTo(literalValue, value)) {
+        if (!audio_utilities::utilities::convertTo(literalValue, value)) {
             return android::BAD_VALUE;
         }
         return android::OK;

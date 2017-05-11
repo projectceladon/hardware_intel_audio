@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@
 #include <fstream>
 
 using namespace std;
-using audio_comms::utilities::convertTo;
+using audio_utilities::utilities::convertTo;
 using android::status_t;
-using audio_comms::utilities::Log;
-using audio_comms::utilities::Property;
+using audio_utilities::utilities::Log;
+using audio_utilities::utilities::Property;
 
 namespace intel_audio
 {

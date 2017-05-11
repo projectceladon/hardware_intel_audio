@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 using namespace android;
 using namespace std;
-using audio_comms::utilities::Log;
+using audio_utilities::utilities::Log;
 
 intel_audio::Device *AudioHalTest::mDevice = NULL;
 

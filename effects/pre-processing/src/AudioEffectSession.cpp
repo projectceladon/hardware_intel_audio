@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 using android::status_t;
 using android::OK;
 using android::BAD_VALUE;
-using audio_comms::utilities::Log;
+using audio_utilities::utilities::Log;
 
 AudioEffectSession::AudioEffectSession(uint32_t sessionId)
     : mId(sessionId)
