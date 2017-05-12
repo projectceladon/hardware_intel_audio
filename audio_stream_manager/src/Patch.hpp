@@ -150,6 +150,8 @@ public:
      */
     static audio_patch_handle_t nextUniqueHandle();
 
+    android::status_t dump(const int fd, int spaces = 0) const;
+
 private:
     PatchInterface *getPatchInterface();
 

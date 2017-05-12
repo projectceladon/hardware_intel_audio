@@ -22,6 +22,7 @@
 #include <utilities/Log.hpp>
 #include <utils/Errors.h>
 #include <utils/Atomic.h>
+#include <utils/String8.h>
 
 using android::status_t;
 using audio_utilities::utilities::Log;
@@ -137,6 +138,24 @@ void Patch::addPorts(size_t portCount, const struct audio_port_config portConfig
         port.updateConfig(portConfig[portConfigIndex]);
         addPort(port);
     }
+}
+
+android::status_t Patch::dump(const int fd, int spaces) const
+{
+    const size_t SIZE = 256;
+    char buffer[SIZE];
+    android::String8 result;
+
+    snprintf(buffer, SIZE, "%*sPatch:\n", spaces, "");
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- handle: %d\n", spaces + 2, "", mHandle);
+    result.append(buffer);
+    write(fd, result.string(), result.size());
+
+    for (const auto &port : mPorts) {
+        port->dump(fd, spaces + 2);
+    }
+    return android::OK;
 }
 
 } // namespace intel_audio

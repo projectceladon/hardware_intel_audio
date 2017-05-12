@@ -70,6 +70,8 @@ public:
     audio_source_t getMixUseCaseSource() const { return mConfig.ext.mix.usecase.source; }
     std::string getDeviceAddress() const { return mConfig.ext.device.address; }
 
+    android::status_t dump(const int fd, int spaces = 0) const;
+
 private:
     /**
      * Audio Port configuration structure used to specify a particular configuration of an

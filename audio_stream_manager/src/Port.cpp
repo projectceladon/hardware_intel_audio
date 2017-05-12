@@ -17,8 +17,10 @@
 #define LOG_TAG "AudioPort"
 
 #include "Port.hpp"
+#include <typeconverter/TypeConverter.hpp>
 #include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
+#include <utils/String8.h>
 
 using android::status_t;
 using audio_utilities::utilities::Log;
@@ -71,6 +73,58 @@ void Port::release()
     if (--mRefCount == 0) {
         Log::Warning() << __FUNCTION__ << ": Port UNUSED " << mConfig.id;
     }
+}
+
+android::status_t Port::dump(const int fd, int spaces) const
+{
+    const size_t SIZE = 256;
+    char buffer[SIZE];
+    android::String8 result;
+
+    snprintf(buffer, SIZE, "%*s Port:\n", spaces, "");
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- handle: %d\n", spaces + 2, "", getHandle());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- role: %s\n", spaces + 2, "",
+             PortRoleConverter::toString(getRole()).c_str());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- type: %s\n", spaces + 2, "",
+             PortTypeConverter::toString(getType()).c_str());
+    result.append(buffer);
+
+    switch (getType()) {
+    case AUDIO_PORT_TYPE_DEVICE:
+        snprintf(buffer, SIZE, "%*s- device type: %s\n", spaces + 2, "",
+                 DeviceConverter::maskToString(getDeviceType()).c_str());
+        result.append(buffer);
+        snprintf(buffer, SIZE, "%*s- device address: %s\n", spaces + 2, "", mConfig.ext.device.address);
+        result.append(buffer);
+        break;
+    case AUDIO_PORT_TYPE_MIX:
+        snprintf(buffer, SIZE, "%*s- Mix IO handle: %d\n", spaces + 2, "", getMixIoHandle());
+        result.append(buffer);
+        if (getRole() == AUDIO_PORT_ROLE_SINK) {
+            snprintf(buffer, SIZE, "%*s- Mix Use Case source: %s\n", spaces + 2, "",
+                     InputSourceConverter::toString(getMixUseCaseSource()).c_str());
+            result.append(buffer);
+        } else {
+            snprintf(buffer, SIZE, "%*s- Mix Use Case stream: %s\n", spaces + 2, "",
+                     StreamTypeConverter::toString(mConfig.ext.mix.usecase.stream).c_str());
+            result.append(buffer);
+        }
+        break;
+    case AUDIO_PORT_TYPE_SESSION:
+        snprintf(buffer, SIZE, "%*s- session: %d\n", spaces + 2, "", mConfig.ext.session.session);
+        result.append(buffer);
+        break;
+    default:
+        break;
+    }
+    snprintf(buffer, SIZE, "%*s- RefCount: %d\n", spaces + 2, "", mRefCount);
+    result.append(buffer);
+
+    write(fd, result.string(), result.size());
+    return android::OK;
 }
 
 } // namespace intel_audio
