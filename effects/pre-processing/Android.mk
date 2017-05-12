@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2016
+# Copyright (C) Intel 2013-2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,8 +48,8 @@ effect_pre_proc_includes_dir_target := \
     $(foreach inc, $(effect_pre_proc_includes_dir), $(TARGET_OUT_HEADERS)/$(inc))
 
 effect_pre_proc_static_lib += \
-    libaudio_comms_utilities \
-    libaudio_comms_convert
+    libaudio_utilities \
+    libaudio_utilities_convert
 
 effect_pre_proc_static_lib_host += \
     $(foreach lib, $(effect_pre_proc_static_lib), $(lib)_host)
@@ -128,7 +128,7 @@ endif
 #######################################################################
 
 audio_effects_functional_test_static_lib += \
-    libaudio_comms_utilities \
+    libaudio_utilities \
 
 audio_effects_functional_test_src_files := \
     test/AudioEffectsFcct.cpp

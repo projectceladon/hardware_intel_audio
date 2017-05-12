@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class AudioPlatformState;
 
 class Device : public DeviceInterface,
                public PatchInterface,
-               private audio_comms::utilities::NonCopyable
+               private audio_utilities::utilities::NonCopyable
 {
 private:
     typedef std::map<audio_io_handle_t, Stream *> StreamCollection;
@@ -391,7 +391,7 @@ private:
      * Protect concurrent access to routing control API to protect concurrent access to
      * patches collection.
      */
-    mutable audio_comms::utilities::Mutex mPatchCollectionLock;
+    mutable audio_utilities::utilities::Mutex mPatchCollectionLock;
 };
 
 } // namespace intel_audio

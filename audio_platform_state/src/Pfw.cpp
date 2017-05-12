@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@
 #endif
 
 using namespace std;
-using audio_comms::utilities::Log;
-using audio_comms::utilities::Property;
-using audio_comms::utilities::convertTo;
+using audio_utilities::utilities::Log;
+using audio_utilities::utilities::Property;
+using audio_utilities::utilities::convertTo;
 
 namespace intel_audio
 {

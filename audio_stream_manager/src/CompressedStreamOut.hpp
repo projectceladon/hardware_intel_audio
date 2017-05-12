@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -227,15 +227,15 @@ private:
      */
     void recover();
 
-    audio_comms::utilities::ConditionVariable mCond;
+    audio_utilities::utilities::ConditionVariable mCond;
     SstState mState;
     compress *mCompress;
     float mVolume;
     bool mIsVolumeChangeRequestPending;
     size_t mBufferSize;
-    mutable audio_comms::utilities::Mutex mCodecLock;
+    mutable audio_utilities::utilities::Mutex mCodecLock;
     bool mIsNonBlocking;
-    audio_comms::utilities::ConditionVariable mOffloadCond;
+    audio_utilities::utilities::ConditionVariable mOffloadCond;
     pthread_t mOffloadThread;
     struct listnode mOffloadCmdList;
     bool mIsOffloadThreadBlocked;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 class AudioEffect;
 class AudioEffectSession;
 
-class LpePreProcessing : private audio_comms::utilities::NonCopyable
+class LpePreProcessing : private audio_utilities::utilities::NonCopyable
 {
 private:
     typedef std::list<AudioEffect *>::iterator EffectListIterator;
@@ -198,5 +198,5 @@ private:
      * Effects are handled in a separated thread, need to lock to protect concurrent
      * access to the input stream.
      */
-    audio_comms::utilities::Mutex mLpeEffectsLock;
+    audio_utilities::utilities::Mutex mLpeEffectsLock;
 };

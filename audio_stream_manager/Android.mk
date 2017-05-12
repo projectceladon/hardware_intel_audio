@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2016
+# Copyright (C) Intel 2013-2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ component_static_lib += \
     libaudioparameters \
     libaudio_hal_utilities \
     libproperty \
-    libaudio_comms_utilities \
-    libaudio_comms_convert \
+    libaudio_utilities \
+    libaudio_utilities_convert \
     libhalaudiodump \
     liblpepreprocessinghelper
 
@@ -180,8 +180,8 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_STATIC_LIBRARIES := \
         libaudioparameters \
-        libaudio_comms_utilities \
-        libaudio_comms_convert \
+        libaudio_utilities \
+        libaudio_utilities_convert \
         libmedia_helper \
         libutils
 

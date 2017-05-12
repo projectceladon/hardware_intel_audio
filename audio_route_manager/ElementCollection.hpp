@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public:
     bool addElement(const std::string &key, T *element)
     {
         if (getElement(key) != NULL) {
-            audio_comms::utilities::Log::Warning() << __FUNCTION__
+            audio_utilities::utilities::Log::Warning() << __FUNCTION__
                                                    << ": element(" << key << ") already added";
             return false;
         }

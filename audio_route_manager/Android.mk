@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2013-2016
+# Copyright (C) Intel 2013-2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -66,8 +66,8 @@ component_static_lib := \
     libaudioplatformstate \
     libparametermgr_static \
     libaudioparameters \
-    libaudio_comms_utilities \
-    libaudio_comms_convert \
+    libaudio_utilities \
+    libaudio_utilities_convert \
     libproperty \
     liblpepreprocessinghelper \
     libevent-listener_static \

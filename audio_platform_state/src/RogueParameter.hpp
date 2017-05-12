@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,17 +62,17 @@ protected:
     {
         std::string literalParamValue = getDefaultLiteralValue();
         if (!getLiteralValueFromParam(androidParamValue, literalParamValue)) {
-            audio_comms::utilities::Log::Warning() << __FUNCTION__
+            audio_utilities::utilities::Log::Warning() << __FUNCTION__
                                                    << ": unknown parameter value "
                                                    << androidParamValue
                                                    << " for " << getKey();
             return false;
         }
-        audio_comms::utilities::Log::Verbose() << __FUNCTION__
+        audio_utilities::utilities::Log::Verbose() << __FUNCTION__
                                                << ": " << getName() << " (" << androidParamValue
                                                << ", " << literalParamValue << ")";
 
-        return audio_comms::utilities::convertTo(literalParamValue, rogueValue);
+        return audio_utilities::utilities::convertTo(literalParamValue, rogueValue);
     }
 
     /**
@@ -88,7 +88,7 @@ protected:
     bool convertValueToAndroidParamValue(const T &rogueValue, std::string &androidParamValue) const
     {
         std::string literalValue = "";
-        return audio_comms::utilities::convertTo(rogueValue, literalValue) &&
+        return audio_utilities::utilities::convertTo(rogueValue, literalValue) &&
                getParamFromLiteralValue(androidParamValue, literalValue);
     }
 
@@ -111,7 +111,7 @@ protected:
     virtual bool sync()
     {
         T typedValue;
-        return audio_comms::utilities::convertTo(getDefaultLiteralValue(), typedValue) &&
+        return audio_utilities::utilities::convertTo(getDefaultLiteralValue(), typedValue) &&
                ParameterMgrHelper::setParameterValue<T>(mParameterMgrConnector, getName(),
                                                         typedValue);
     }

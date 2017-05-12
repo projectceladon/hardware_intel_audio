@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <utilities/Log.hpp>
 
 using std::string;
-using audio_comms::utilities::Log;
+using audio_utilities::utilities::Log;
 
 CriterionType::CriterionType(const string &name,
                              bool isInclusive,
@@ -70,12 +70,12 @@ bool CriterionType::getNumericalFromLiteral(const std::string &literalValue, int
         bool isValueProvidedAsHexa = !literalValue.compare(0, 2, "0x");
         if (isValueProvidedAsHexa) {
             uint32_t numericalUValue = 0;
-            if (!audio_comms::utilities::convertTo(value, numericalUValue)) {
+            if (!audio_utilities::utilities::convertTo(value, numericalUValue)) {
                 return false;
             }
             numerical = numericalUValue;
         } else {
-            if (!audio_comms::utilities::convertTo(value, numericalValue)) {
+            if (!audio_utilities::utilities::convertTo(value, numericalValue)) {
                 return false;
             }
             numerical = numericalValue;

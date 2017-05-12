@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ using ::testing::Test;
 using std::string;
 using std::numeric_limits;
 using namespace android;
-using audio_comms::utilities::Log;
+using audio_utilities::utilities::Log;
 
 const string AudioEffectsFunctionalTest::mLpeEffectLibPath =
     "/system/lib/soundfx/liblpepreprocessing.so";

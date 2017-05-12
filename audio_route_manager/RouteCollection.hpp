@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public:
     {
         AudioRoute *route = Base::getElement(name);
         if (!route) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
+            audio_utilities::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
             return;
         }
         route->setApplicable(isApplicable);
@@ -75,7 +75,7 @@ public:
     {
         AudioRoute *route = Base::getElement(name);
         if (!route) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
+            audio_utilities::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
             return;
         }
         route->setNeedReconfigure(needReconfigure);
@@ -85,7 +85,7 @@ public:
     {
         AudioRoute *route = Base::getElement(name);
         if (!route) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
+            audio_utilities::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
             return;
         }
         route->setNeedReroute(needReroute);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public:
         // We take the first stream that corresponds to the primary output.
         auto it = mOrderedStreamList[Direction::Output].begin();
         if (*it == NULL) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__
+            audio_utilities::utilities::Log::Error() << __FUNCTION__
                                                  << ": current stream NOT FOUND for echo ref";
         }
         return *it;
@@ -87,7 +87,7 @@ public:
     {
         AudioStreamRoute *route = getElement(name);
         if (!route) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
+            audio_utilities::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
             return;
         }
         route->updateStreamRouteConfig(config);
@@ -97,7 +97,7 @@ public:
     {
         AudioStreamRoute *route = getElement(name);
         if (!route) {
-            audio_comms::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
+            audio_utilities::utilities::Log::Error() << __FUNCTION__ << ": invalid route " << name;
             return;
         }
         route->addEffectSupported(effect);
@@ -130,7 +130,7 @@ public:
             auto route = it.second;
 
             if (route && ((route->previouslyUsed() && !route->isUsed()) || route->needRepath())) {
-                audio_comms::utilities::Log::Verbose() << __FUNCTION__
+                audio_utilities::utilities::Log::Verbose() << __FUNCTION__
                                                        << ": Route " << route->getName()
                                                        << " to be disabled";
                 route->unroute(isPostDisable);
@@ -154,11 +154,11 @@ public:
             auto route = it.second;
 
             if (route && ((!route->previouslyUsed() && route->isUsed()) || route->needRepath())) {
-                audio_comms::utilities::Log::Verbose() << __FUNCTION__
+                audio_utilities::utilities::Log::Verbose() << __FUNCTION__
                                                        << ": Route" << route->getName()
                                                        << " to be enabled";
                 if (route->route(isPreEnable) != android::OK) {
-                    audio_comms::utilities::Log::Error() << "\t error while routing "
+                    audio_utilities::utilities::Log::Error() << "\t error while routing "
                                                          << route->getName();
                 }
             }

@@ -1,6 +1,6 @@
 #
 #
-# Copyright (C) Intel 2014-2016
+# Copyright (C) Intel 2014-2017
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ component_src_files :=  \
 
 component_static_lib := \
     libaudio_hal_utilities \
-    libaudio_comms_utilities \
-    libaudio_comms_convert \
+    libaudio_utilities \
+    libaudio_utilities_convert \
 
 component_static_lib_host := \
     $(foreach lib, $(component_static_lib), $(lib)_host) \
@@ -91,8 +91,8 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_STATIC_LIBRARIES += \
     libaudioparameters_host \
-    libaudio_comms_utilities_host \
-    libaudio_comms_convert_host
+    libaudio_utilities_host \
+    libaudio_utilities_convert_host
 
 LOCAL_CFLAGS := -Wall -Werror -Wextra
 

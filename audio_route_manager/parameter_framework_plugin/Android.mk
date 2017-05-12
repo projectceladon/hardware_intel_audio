@@ -35,8 +35,8 @@ component_common_includes_dir := \
     external/tinyalsa/include
 
 component_static_lib := \
-    libaudio_comms_utilities \
-    libaudio_comms_convert \
+    libaudio_utilities \
+    libaudio_utilities_convert \
     libsamplespec_static \
     libpfw_utility
 

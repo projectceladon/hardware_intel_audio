@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ struct InStreamTrait
 
 /** Common part of stream wrapper */
 template <class Trait>
-class StreamWrapper : private audio_comms::utilities::NonCopyable
+class StreamWrapper : private audio_utilities::utilities::NonCopyable
 {
 public:
     static typename Trait::CStream *bind(typename Trait::CppStream *cppStream)
