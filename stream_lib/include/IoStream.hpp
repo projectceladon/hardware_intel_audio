@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 typedef android::RWLock::AutoRLock AutoR;
 typedef android::RWLock::AutoWLock AutoW;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class IStreamRoute;
@@ -359,6 +359,12 @@ public:
         return mDeviceAddress;
     }
 
+    bool needReconfigure() const { return mNeedReconfigure; }
+    void setNeedReconfigure();
+    void resetNeedReconfigure() { mNeedReconfigure = false; }
+
+    android::status_t dump(const int fd, int spaces) const;
+
 protected:
     /**
      * Attach the stream to its route.
@@ -413,6 +419,8 @@ private:
 
     audio_devices_t mDevices = AUDIO_DEVICE_NONE; /**< devices assgined by the policy.*/
     std::string mDeviceAddress;
+
+    bool mNeedReconfigure = false;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

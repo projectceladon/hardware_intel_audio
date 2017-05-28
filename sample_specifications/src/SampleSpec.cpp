@@ -16,16 +16,18 @@
 #define LOG_TAG "SampleSpec"
 
 #include "SampleSpec.hpp"
+#include <typeconverter/TypeConverter.hpp>
 #include <AudioUtilitiesAssert.hpp>
 #include <utilities/Log.hpp>
 #include <stdint.h>
 #include <errno.h>
 #include <limits>
+#include <utils/String8.h>
 
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 #define SAMPLE_SPEC_ITEM_IS_VALID(sampleSpecItem)                                    \
@@ -41,7 +43,7 @@ SampleSpec::SampleSpec(uint32_t channel,
     setSampleSpecItem(ChannelCountSampleSpecItem, channel);
     setSampleSpecItem(FormatSampleSpecItem, format);
     setSampleSpecItem(RateSampleSpecItem, rate);
-    if (!channelsPolicy.empty()) {
+    if (not channelsPolicy.empty()) {
         setChannelsPolicy(channelsPolicy);
     }
 }
@@ -55,12 +57,9 @@ void SampleSpec::setSampleSpecItem(SampleSpecItem sampleSpecItem, uint32_t value
 
         AUDIOUTILITIES_ASSERT(value < mMaxChannels, "Max channel number reached");
 
-        mChannelsPolicy.clear();
         // Reset all the channels policy to copy by default
-        for (uint32_t i = 0; i < value; i++) {
-
-            mChannelsPolicy.push_back(Copy);
-        }
+        mChannelsPolicy.clear();
+        mChannelsPolicy = std::vector<ChannelsPolicy>(value, Copy);
     }
     mSampleSpec[sampleSpecItem] = value;
 }
@@ -141,4 +140,25 @@ bool SampleSpec::isSampleSpecItemEqual(SampleSpecItem sampleSpecItem,
     return (sampleSpecItem != ChannelCountSampleSpecItem) ||
            ssSrc.getChannelsPolicy() == ssDst.getChannelsPolicy();
 }
-}  // namespace intel_audio
+
+android::status_t SampleSpec::dump(const int fd, bool isOut, int spaces) const
+{
+    const size_t SIZE = 256;
+    char buffer[SIZE];
+    android::String8 result;
+    snprintf(buffer, SIZE, "%*s- rate %d\n", spaces, "", getSampleRate());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- channels %d\n", spaces, "", getChannelCount());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- channel mask %s\n", spaces, "",
+             isOut ? OutputChannelConverter::toString(mChannelMask).c_str() :
+                     InputChannelConverter::toString(mChannelMask).c_str());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- format %s\n", spaces, "", FormatConverter::toString(getFormat()).c_str());
+    result.append(buffer);
+
+    write(fd, result.string(), result.size());
+    return android::OK;
+}
+
+}  // namespace audio_hal

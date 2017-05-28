@@ -61,9 +61,10 @@ effect_pre_proc_static_lib_target += \
 effect_pre_proc_shared_lib_target += \
     libutils  \
     libcutils \
+    liblog \
     libmedia
 
-effect_pre_proc_cflags := -Wall -Werror -Wno-unused-parameter
+effect_pre_proc_cflags := $(HAL_COMMON_CFLAGS)
 
 #######################################################################
 # Build for target

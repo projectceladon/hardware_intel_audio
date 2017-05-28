@@ -30,7 +30,9 @@ component_export_include_dir := \
 component_src_files := \
     ParameterMgrHelper.cpp \
     Criterion.cpp \
-    CriterionType.cpp
+    CriterionType.cpp \
+    CriterionParameter.cpp \
+    Parameter.cpp
 
 component_common_includes_dir := \
     $(component_export_include_dir)
@@ -52,10 +54,14 @@ component_static_lib := \
     libaudio_utilities_convert \
     libpfw_utility
 
+ifeq ($(HAVE_BOOST), 1)
+component_static_lib += libboost
+endif
+
 component_static_lib_host := \
     $(foreach lib, $(component_static_lib), $(lib)_host)
 
-component_cflags := -Wall -Werror -Wextra
+component_cflags := $(HAL_COMMON_CFLAGS)
 
 #######################################################################
 # Component Host Build
@@ -71,6 +77,7 @@ LOCAL_EXPORT_C_INCLUDE_DIRS := $(component_export_include_dir)
 LOCAL_C_INCLUDES := $(component_includes_dir_host)
 LOCAL_SRC_FILES := $(component_src_files)
 LOCAL_STATIC_LIBRARIES := $(component_static_lib_host)
+LOCAL_SHARED_LIBRARIES := libparameter
 LOCAL_CFLAGS := $(component_cflags) -O0 -ggdb
 
 include $(OPTIONAL_QUALITY_COVERAGE_JUMPER)
@@ -87,7 +94,7 @@ LOCAL_C_INCLUDES := $(component_includes_dir_target)
 LOCAL_SRC_FILES := $(component_src_files)
 LOCAL_STATIC_LIBRARIES := $(component_static_lib)
 LOCAL_CFLAGS := $(component_cflags)
-
+LOCAL_SHARED_LIBRARIES := libparameter
 LOCAL_MODULE := libparametermgr_static
 LOCAL_MODULE_OWNER := intel
 LOCAL_MODULE_TAGS := optional

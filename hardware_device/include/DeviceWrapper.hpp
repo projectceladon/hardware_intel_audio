@@ -22,7 +22,7 @@
 #include <AudioNonCopyable.hpp>
 #include <string.h> /* for strdup */
 
-namespace intel_audio
+namespace audio_hal
 {
 
 template <class Device, int CDeviceApiVersion>
@@ -456,4 +456,4 @@ int DeviceWrapper<Device, CDeviceApiVersion>::setAudioPortConfig(struct audio_hw
     return static_cast<int>(getCppDevice(dev).setAudioPortConfig(*config));
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

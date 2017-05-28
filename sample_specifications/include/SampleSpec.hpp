@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 
 
 #include <hardware/audio.h>
-#include <tinyalsa/asoundlib.h>
+#include <utils/Errors.h>
 #include <string.h>
 #include <vector>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 //
@@ -100,7 +100,6 @@ public:
     // Specific Accessors
     void setChannelCount(uint32_t channelCount)
     {
-
         setSampleSpecItem(ChannelCountSampleSpecItem, channelCount);
     }
     uint32_t getChannelCount() const
@@ -109,7 +108,6 @@ public:
     }
     void setSampleRate(uint32_t sampleRate)
     {
-
         setSampleSpecItem(RateSampleSpecItem, sampleRate);
     }
     uint32_t getSampleRate() const
@@ -225,6 +223,8 @@ public:
                                       const SampleSpec &ssSrc,
                                       const SampleSpec &ssDst);
 
+    android::status_t dump(const int fd, bool isOut, int spaces) const;
+
 private:
     uint32_t mSampleSpec[NbSampleSpecItems]; /**< Array of sample spec items:
                                               *         -channel number
@@ -242,4 +242,4 @@ private:
     static const uint32_t mMaxChannels = 32; /**< supports until 32 channels. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

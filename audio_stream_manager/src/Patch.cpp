@@ -22,12 +22,13 @@
 #include <utilities/Log.hpp>
 #include <utils/Errors.h>
 #include <utils/Atomic.h>
+#include <utils/String8.h>
 
 using android::status_t;
 using audio_utilities::utilities::Log;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 Patch::Patch(const audio_patch_handle_t handle, PatchInterface *patchInterface)
@@ -139,4 +140,22 @@ void Patch::addPorts(size_t portCount, const struct audio_port_config portConfig
     }
 }
 
-} // namespace intel_audio
+android::status_t Patch::dump(const int fd, int spaces) const
+{
+    const size_t SIZE = 256;
+    char buffer[SIZE];
+    android::String8 result;
+
+    snprintf(buffer, SIZE, "%*sPatch:\n", spaces, "");
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- handle: %d\n", spaces + 2, "", mHandle);
+    result.append(buffer);
+    write(fd, result.string(), result.size());
+
+    for (const auto &port : mPorts) {
+        port->dump(fd, spaces + 2);
+    }
+    return android::OK;
+}
+
+} // namespace audio_hal

@@ -15,16 +15,18 @@
  */
 #include "IoStream.hpp"
 #include "AudioDevice.hpp"
+#include <typeconverter/TypeConverter.hpp>
 #include <IStreamRoute.hpp>
 #include <AudioUtilitiesAssert.hpp>
 #include <SampleSpec.hpp>
 #include <utils/RWLock.h>
 #include <utilities/Log.hpp>
+#include <utils/String8.h>
 
 using audio_utilities::utilities::Log;
 using std::string;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 bool IoStream::isRouted() const
@@ -66,6 +68,8 @@ android::status_t IoStream::attachRouteL()
     setCurrentStreamRouteL(mNewStreamRoute);
     setRouteSampleSpecL(mCurrentStreamRoute->getSampleSpec());
     mAudioDevice = getNewStreamRoute()->getAudioDevice();
+    // now we are attached to a route, it is high time to reset need reconfigure flag
+    resetNeedReconfigure();
     return android::OK;
 }
 
@@ -74,17 +78,21 @@ android::status_t IoStream::detachRouteL()
 {
     mCurrentStreamRoute = NULL;
     mAudioDevice = NULL;
+    // not routed anymore, it is high time to reset need reconfigure flag
+    resetNeedReconfigure();
     return android::OK;
 }
 
 void IoStream::addRequestedEffect(uint32_t effectId)
 {
     mEffectsRequestedMask |= effectId;
+    setNeedReconfigure();
 }
 
 void IoStream::removeRequestedEffect(uint32_t effectId)
 {
     mEffectsRequestedMask &= ~effectId;
+    setNeedReconfigure();
 }
 
 uint32_t IoStream::getOutputSilencePrologMs() const
@@ -99,6 +107,10 @@ uint32_t IoStream::getOutputSilencePrologMs() const
 android::status_t IoStream::setDevices(audio_devices_t devices, const std::string &address)
 {
     AutoW lock(mStreamLock);
+    // A change of device requires to be reconfigure (aka muted / unmuted) to garantee safe transition
+    if ((mDevices != devices) || (mDeviceAddress != address)) {
+        setNeedReconfigure();
+    }
     mDevices = devices;
     mDeviceAddress = address;
     return android::OK;
@@ -153,4 +165,44 @@ android::status_t IoStream::pcmStop() const
 {
     return mAudioDevice->pcmStop();
 }
-} // namespace intel_audio
+
+void IoStream::setNeedReconfigure()
+{
+    if (not isRoutedL()) {
+        // No-operation if not routed
+        return;
+    }
+    mNeedReconfigure = true;
+}
+
+android::status_t IoStream::dump(const int fd, int spaces) const
+{
+    const size_t SIZE = 256;
+    char buffer[SIZE];
+    android::String8 result;
+
+    snprintf(buffer, SIZE, "%*s- mEffectsRequestedMask: 0x%X\n", spaces, "", mEffectsRequestedMask);
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- Need Reconfigure: %s\n", spaces, "", mNeedReconfigure? "Y" : "N");
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- is attached to route: %s\n", spaces, "",
+             (mCurrentStreamRoute == nullptr ? "none" : mCurrentStreamRoute->getName().c_str()));
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- will be attached to route: %s\n", spaces, "",
+             (mNewStreamRoute == nullptr ? "none" : mNewStreamRoute->getName().c_str()));
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- Device Types: %s\n", spaces, "",
+             DeviceConverter::maskToString(mDevices, ",").c_str());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- Device Address: %s\n", spaces, "", mDeviceAddress.c_str());
+    result.append(buffer);
+    snprintf(buffer, SIZE, "%*s- Stream Sample Specification: \n", spaces, "");
+    result.append(buffer);
+    write(fd, result.string(), result.size());
+
+    mSampleSpec.dump(fd, isOut(), spaces + 2);
+
+    return android::OK;
+}
+
+} // namespace audio_hal

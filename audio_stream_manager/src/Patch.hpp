@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #include <system/audio.h>
 #include <vector>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class PatchInterface
@@ -150,6 +150,8 @@ public:
      */
     static audio_patch_handle_t nextUniqueHandle();
 
+    android::status_t dump(const int fd, int spaces = 0) const;
+
 private:
     PatchInterface *getPatchInterface();
 
@@ -181,4 +183,4 @@ private:
     PatchInterface *mPatchInterface;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

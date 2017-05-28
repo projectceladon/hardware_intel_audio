@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #include <Direction.hpp>
 #include <string>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /**
@@ -71,4 +71,4 @@ public:
     static const std::string &gkeyContextAwarenessRouteOff;
 };
 
-}   // namespace intel_audio
+}   // namespace audio_hal

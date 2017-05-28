@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 #include <string>
 
 
-namespace intel_audio
+namespace audio_hal
 {
 
 /** Stream interface common to input and output streams. */
@@ -326,4 +326,4 @@ public:
     virtual android::status_t getCapturePosition(int64_t &frames, int64_t &time) = 0;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@
 #include <gtest/gtest.h>
 
 
-using namespace intel_audio;
+using namespace audio_hal;
 using ::testing::Test;
 using std::string;
 
 const char *DeviceMock::AudioHalName = "test";
 
-typedef intel_audio::DeviceWrapper<intel_audio::DeviceMock, AUDIO_DEVICE_API_VERSION_2_0> Wrapper;
+typedef audio_hal::DeviceWrapper<audio_hal::DeviceMock, AUDIO_DEVICE_API_VERSION_2_0> Wrapper;
 
 class DeviceTest : public ::testing::Test
 {

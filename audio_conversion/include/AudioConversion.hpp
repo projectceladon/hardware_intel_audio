@@ -21,7 +21,7 @@
 #include <AudioNonCopyable.hpp>
 #include <list>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class AudioConverter;
@@ -235,4 +235,4 @@ private:
      */
     static const uint32_t mAllocBufferMultFactor;
 };
-}  // namespace intel_audio
+}  // namespace audio_hal

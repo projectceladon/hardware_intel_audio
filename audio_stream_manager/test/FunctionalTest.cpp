@@ -309,7 +309,7 @@ TEST_P(AudioHalValidInputDeviceTest, audio_devices_t)
                                              flags, address, source));
     ASSERT_FALSE(inStream == NULL);
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = inStream->common.get_parameters(&inStream->common,
                                                            android::AudioParameter::keyRouting);
     valuePair.add<int32_t>(android::AudioParameter::keyRouting, devices);
@@ -363,7 +363,7 @@ TEST_P(AudioHalInvalidInputDeviceTest, audio_devices_t)
                                              &inStream, flags, address, source));
     ASSERT_FALSE(inStream == NULL);
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     valuePair.add<int32_t>(android::AudioParameter::keyRouting, devices);
     ASSERT_EQ(inStream->common.set_parameters(&inStream->common,
                                               valuePair.toString().c_str()), android::BAD_VALUE);
@@ -412,7 +412,7 @@ TEST_P(AudioHalValidOutputDevicesTest, audio_devices_t)
     EXPECT_EQ(AUDIO_FORMAT_PCM_16_BIT, outStream->common.get_format(&outStream->common));
     EXPECT_EQ(AUDIO_CHANNEL_OUT_STEREO, outStream->common.get_channels(&outStream->common));
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = outStream->common.get_parameters(&outStream->common,
                                                             android::AudioParameter::keyRouting);
     valuePair.add<int32_t>(android::AudioParameter::keyRouting, devices);
@@ -473,7 +473,7 @@ TEST_P(AudioHalInvalidOutputDevicesTest, audio_devices_t)
     ASSERT_EQ(status, android::OK);
     ASSERT_TRUE(outStream != NULL);
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     valuePair.add<int32_t>(android::AudioParameter::keyRouting, devices);
     ASSERT_EQ(outStream->common.set_parameters(&outStream->common,
                                                valuePair.toString().c_str()), android::BAD_VALUE);
@@ -517,7 +517,7 @@ TEST_P(AudioHalValidGlobalParameterTest, key)
 
     audio_hw_device *audioDevice = getDevice();
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = audioDevice->get_parameters(audioDevice, key.c_str());
 
     valuePair.add(key, value);
@@ -542,7 +542,7 @@ TEST_P(AudioHalInvalidGlobalParameterTest, key)
     string value = GetParam().second;
     audio_hw_device *audioDevice = getDevice();
 
-    intel_audio::KeyValuePairs valuePair;
+    audio_hal::KeyValuePairs valuePair;
     string returnedParam = audioDevice->get_parameters(audioDevice, key.c_str());
 
     valuePair.add(key, value);

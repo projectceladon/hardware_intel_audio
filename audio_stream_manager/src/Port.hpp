@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #include <utils/Errors.h>
 #include <string>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class Port
@@ -70,6 +70,8 @@ public:
     audio_source_t getMixUseCaseSource() const { return mConfig.ext.mix.usecase.source; }
     std::string getDeviceAddress() const { return mConfig.ext.device.address; }
 
+    android::status_t dump(const int fd, int spaces = 0) const;
+
 private:
     /**
      * Audio Port configuration structure used to specify a particular configuration of an
@@ -80,4 +82,4 @@ private:
     uint32_t mRefCount; /**< Port usage reference counter. */
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

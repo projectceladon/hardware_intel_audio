@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public:
 
     virtual void TearDown();
 
-    static intel_audio::Device *getDevice()
+    static audio_hal::Device *getDevice()
     {
         return mDevice;
     }
@@ -46,7 +46,7 @@ public:
 
 protected:
 
-    static intel_audio::Device *mDevice;
+    static audio_hal::Device *mDevice;
 
 };
 

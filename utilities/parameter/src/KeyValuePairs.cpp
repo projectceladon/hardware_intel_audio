@@ -23,7 +23,7 @@
 using namespace audio_utilities::utilities;
 using namespace std;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const char *const KeyValuePairs::mPairDelimiter = ";";
@@ -128,4 +128,4 @@ android::status_t KeyValuePairs::getLiteral(const string &key, string &value) co
     return android::OK;
 }
 
-}   // namespace intel_audio
+}   // namespace audio_hal

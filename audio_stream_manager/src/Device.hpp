@@ -17,7 +17,7 @@
 
 #include "Patch.hpp"
 #include "Port.hpp"
-#include <IStreamInterface.hpp>
+#include <AudioRouteManager.hpp>
 #include <KeyValuePairs.hpp>
 #include <Direction.hpp>
 #include <audio_effects/effect_aec.h>
@@ -35,15 +35,13 @@
 
 struct echo_reference_itfe;
 
-namespace intel_audio
+namespace audio_hal
 {
 
-class CAudioConversion;
 class CompressedStreamOut;
 class StreamOut;
 class StreamIn;
 class Stream;
-class AudioPlatformState;
 
 class Device : public DeviceInterface,
                public PatchInterface,
@@ -102,8 +100,7 @@ public:
     virtual android::status_t setParameters(const std::string &keyValuePairs);
     virtual std::string getParameters(const std::string &keys) const;
     virtual size_t getInputBufferSize(const audio_config_t &config) const;
-    /** @note API not implemented in our Audio HAL */
-    virtual android::status_t dump(const int /* fd */) const { return android::OK; }
+    virtual android::status_t dump(const int  fd) const;
     /** @note Routing Control API used for routing with AUDIO_DEVICE_API_VERSION >= 3.0. */
     virtual android::status_t createAudioPatch(size_t sourcesCount,
                                                const struct audio_port_config sources[],
@@ -151,7 +148,7 @@ protected:
      *
      * @return stream interface of the route manager.
      */
-    IStreamInterface &getStreamInterface()
+    AudioRouteManager &getStreamInterface()
     {
         AUDIOUTILITIES_ASSERT(mStreamInterface != NULL, "Invalid stream interface");
         return *mStreamInterface;
@@ -368,7 +365,7 @@ private:
 
     struct echo_reference_itfe *mEchoReference; /**< Echo reference to use for AEC effect. */
 
-    IStreamInterface *mStreamInterface; /**< Route Manager Stream Interface pointer. */
+    AudioRouteManager *mStreamInterface; /**< Route Manager Stream Interface pointer. */
 
     audio_mode_t mMode; /**< Android telephony mode. */
 
@@ -379,8 +376,6 @@ private:
 
     static const char *const mDefaultGainPropName; /**< Gain property name. */
     static const float mDefaultGainValue; /**< Default gain value if empty property. */
-
-    static const uint32_t mRecordingBufferTimeUsec = 20000;
 
     /**
      * Stream Rate associated with narrow band in case of VoIP.
@@ -394,4 +389,4 @@ private:
     mutable audio_utilities::utilities::Mutex mPatchCollectionLock;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

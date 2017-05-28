@@ -24,7 +24,7 @@
 #include <string>
 
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class OutputStreamWrapper;
@@ -282,4 +282,4 @@ int StreamWrapper<Trait>::wrapRemoveAudioEffect(const audio_stream_t *stream,
     return static_cast<int>(getCppStream(stream).removeAudioEffect(effect));
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

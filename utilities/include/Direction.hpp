@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Intel Corporation
+ * Copyright (C) 2013-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 #include <sys/types.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class Direction
@@ -33,4 +33,4 @@ public:
     static const size_t gNbDirections = 2;
 };
 
-} // namespace intel_audio
+} // namespace audio_hal

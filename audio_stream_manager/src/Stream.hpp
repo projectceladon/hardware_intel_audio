@@ -15,7 +15,7 @@
  */
 #pragma once
 
-#include "SampleSpec.hpp"
+#include <SampleSpec.hpp>
 #include <StreamInterface.hpp>
 #include <AudioNonCopyable.hpp>
 #include <Direction.hpp>
@@ -27,7 +27,7 @@
 
 class HalAudioDump;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 class Device;
@@ -61,8 +61,7 @@ public:
     virtual audio_format_t getFormat() const;
     virtual android::status_t setFormat(audio_format_t format);
     virtual android::status_t standby();
-    /** @note API not implemented in our Audio HAL */
-    virtual android::status_t dump(int) const { return android::OK; }
+    virtual android::status_t dump(int fd) const;
     virtual audio_devices_t getDevice() const;
     virtual android::status_t setDevice(audio_devices_t device) = 0;
     /** @note API not implemented in stream base class, input specific implementation only. */
@@ -97,6 +96,14 @@ public:
      *                    is involved
      */
     audio_patch_handle_t getPatchHandle() const { return mPatchHandle; }
+
+    /**
+     * Update the latency according to the flag.
+     * Request will be done to the route manager to informs the latency introduced by the route
+     * supporting this stream flags.
+     *
+     */
+    void updateLatency();
 
 protected:
     Stream(Device *parent, audio_io_handle_t handle, uint32_t flagMask);
@@ -189,14 +196,6 @@ protected:
      * @return latency in milliseconds.
      */
     uint32_t getLatencyMs() const;
-
-    /**
-     * Update the latency according to the flag.
-     * Request will be done to the route manager to informs the latency introduced by the route
-     * supporting this stream flags.
-     *
-     */
-    void updateLatency();
 
     /**
      * Sets the state of the status.
@@ -342,4 +341,4 @@ private:
      */
     audio_patch_handle_t mPatchHandle;
 };
-} // namespace intel_audio
+} // namespace audio_hal

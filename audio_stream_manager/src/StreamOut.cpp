@@ -25,7 +25,7 @@ using namespace std;
 using android::status_t;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const uint32_t StreamOut::mMaxAgainRetry = 2;
@@ -380,4 +380,4 @@ status_t StreamOut::setDevice(audio_devices_t device)
     return setDevices(device, {});
 }
 
-} // namespace intel_audio
+} // namespace audio_hal

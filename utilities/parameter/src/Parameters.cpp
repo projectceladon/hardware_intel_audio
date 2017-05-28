@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 Intel Corporation
+ * Copyright (C) 2015-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #include "Parameters.hpp"
 
-namespace intel_audio
+namespace audio_hal
 {
 
 const std::string &Parameters::gKeyAndroidMode = "android_mode";
@@ -57,4 +57,4 @@ const std::string &Parameters::gkeyContextAwarenessRouteOn = "on";
 
 const std::string &Parameters::gkeyContextAwarenessRouteOff = "off";
 
-}   // namespace intel_audio
+}   // namespace audio_hal

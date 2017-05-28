@@ -23,7 +23,7 @@
 using namespace android;
 using audio_utilities::utilities::Log;
 
-namespace intel_audio
+namespace audio_hal
 {
 
 template <>
@@ -333,4 +333,4 @@ type AudioRemapper::getAveragedSrcFrame(const type *src) const
 
     return dst;
 }
-}  // namespace intel_audio
+}  // namespace audio_hal

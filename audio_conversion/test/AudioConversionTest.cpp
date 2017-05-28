@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2015 Intel Corporation
+ * Copyright (C) 2014-2017 Intel Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include <utils/Errors.h>
 
-namespace intel_audio
+namespace audio_hal
 {
 
 typedef std::tr1::tuple<const SampleSpec, const SampleSpec, const void *, size_t,
@@ -974,4 +974,4 @@ TEST(AudioConversion, frameExactApi)
     // @todo: quality check of output
 }
 
-} // namespace intel_audio
+} // namespace audio_hal
