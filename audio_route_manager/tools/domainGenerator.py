@@ -192,7 +192,7 @@ def parseEdd(EDDFiles):
 
         try:
             root.propagate()
-        except EddParser.MyPropagationError, ex :
+        except EddParser.MyPropagationError as ex :
             logging.critical(str(ex))
             logging.info("EXIT ON FAILURE")
             exit(1)
